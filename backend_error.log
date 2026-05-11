@@ -1,0 +1,126 @@
+[2026-05-11 13:27:39.883701] ERROR in Hit 1 for Session 30: OpenCV(4.13.0) D:\a\opencv-python\opencv-python\opencv\modules\highgui\src\window.cpp:1301: error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure script in function 'cvShowImage'
+
+Traceback (most recent call last):
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\attendance_service.py", line 54, in process_attendance_hit
+    cv2.imshow(f"Live Monitoring - Session {session_id}", frame)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cv2.error: OpenCV(4.13.0) D:\a\opencv-python\opencv-python\opencv\modules\highgui\src\window.cpp:1301: error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure script in function 'cvShowImage'
+
+
+[2026-05-11 13:27:51.362736] ERROR in Hit 1 for Session 31: OpenCV(4.13.0) D:\a\opencv-python\opencv-python\opencv\modules\highgui\src\window.cpp:1301: error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure script in function 'cvShowImage'
+
+Traceback (most recent call last):
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\attendance_service.py", line 54, in process_attendance_hit
+    cv2.imshow(f"Live Monitoring - Session {session_id}", frame)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cv2.error: OpenCV(4.13.0) D:\a\opencv-python\opencv-python\opencv\modules\highgui\src\window.cpp:1301: error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure script in function 'cvShowImage'
+
+
+[2026-05-11 13:27:54.328386] ERROR in Hit 1 for Session 32: OpenCV(4.13.0) D:\a\opencv-python\opencv-python\opencv\modules\highgui\src\window.cpp:1301: error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure script in function 'cvShowImage'
+
+Traceback (most recent call last):
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\attendance_service.py", line 54, in process_attendance_hit
+    cv2.imshow(f"Live Monitoring - Session {session_id}", frame)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cv2.error: OpenCV(4.13.0) D:\a\opencv-python\opencv-python\opencv\modules\highgui\src\window.cpp:1301: error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure script in function 'cvShowImage'
+
+
+[2026-05-11 13:28:04.146729] ERROR in Hit 1 for Session 33: OpenCV(4.13.0) D:\a\opencv-python\opencv-python\opencv\modules\highgui\src\window.cpp:1301: error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure script in function 'cvShowImage'
+
+Traceback (most recent call last):
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\attendance_service.py", line 54, in process_attendance_hit
+    cv2.imshow(f"Live Monitoring - Session {session_id}", frame)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cv2.error: OpenCV(4.13.0) D:\a\opencv-python\opencv-python\opencv\modules\highgui\src\window.cpp:1301: error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure script in function 'cvShowImage'
+
+
+[2026-05-11 13:28:11.093678] ERROR in Hit 2 for Session 30: OpenCV(4.13.0) D:\a\opencv-python\opencv-python\opencv\modules\highgui\src\window.cpp:1301: error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure script in function 'cvShowImage'
+
+Traceback (most recent call last):
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\attendance_service.py", line 54, in process_attendance_hit
+    cv2.imshow(f"Live Monitoring - Session {session_id}", frame)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cv2.error: OpenCV(4.13.0) D:\a\opencv-python\opencv-python\opencv\modules\highgui\src\window.cpp:1301: error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure script in function 'cvShowImage'
+
+
+[2026-05-11 13:28:22.552731] ERROR in Hit 2 for Session 31: OpenCV(4.13.0) D:\a\opencv-python\opencv-python\opencv\modules\highgui\src\window.cpp:1301: error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure script in function 'cvShowImage'
+
+Traceback (most recent call last):
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\attendance_service.py", line 54, in process_attendance_hit
+    cv2.imshow(f"Live Monitoring - Session {session_id}", frame)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cv2.error: OpenCV(4.13.0) D:\a\opencv-python\opencv-python\opencv\modules\highgui\src\window.cpp:1301: error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure script in function 'cvShowImage'
+
+
+[2026-05-11 13:28:25.527072] ERROR in Hit 2 for Session 32: OpenCV(4.13.0) D:\a\opencv-python\opencv-python\opencv\modules\highgui\src\window.cpp:1301: error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure script in function 'cvShowImage'
+
+Traceback (most recent call last):
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\attendance_service.py", line 54, in process_attendance_hit
+    cv2.imshow(f"Live Monitoring - Session {session_id}", frame)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cv2.error: OpenCV(4.13.0) D:\a\opencv-python\opencv-python\opencv\modules\highgui\src\window.cpp:1301: error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure script in function 'cvShowImage'
+
+
+[2026-05-11 13:28:35.419434] ERROR in Hit 2 for Session 33: OpenCV(4.13.0) D:\a\opencv-python\opencv-python\opencv\modules\highgui\src\window.cpp:1301: error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure script in function 'cvShowImage'
+
+Traceback (most recent call last):
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\attendance_service.py", line 54, in process_attendance_hit
+    cv2.imshow(f"Live Monitoring - Session {session_id}", frame)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cv2.error: OpenCV(4.13.0) D:\a\opencv-python\opencv-python\opencv\modules\highgui\src\window.cpp:1301: error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure script in function 'cvShowImage'
+
+
+[2026-05-11 13:37:58.466854] ERROR in Hit 1 for Session 34: module 'cv2' has no attribute 'FR_COSINE'
+Traceback (most recent call last):
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\attendance_service.py", line 140, in process_attendance_hit
+    score = ai.compare_faces(student.face_embedding, d_emb)
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\ai_service.py", line 102, in compare_faces
+    cosine_score = self.recognizer.match(feat1, feat2, cv2.FR_COSINE)
+                                                       ^^^^^^^^^^^^^
+AttributeError: module 'cv2' has no attribute 'FR_COSINE'
+
+[2026-05-11 13:38:36.410629] ERROR in Hit 2 for Session 34: module 'cv2' has no attribute 'FR_COSINE'
+Traceback (most recent call last):
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\attendance_service.py", line 140, in process_attendance_hit
+    score = ai.compare_faces(student.face_embedding, d_emb)
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\ai_service.py", line 102, in compare_faces
+    cosine_score = self.recognizer.match(feat1, feat2, cv2.FR_COSINE)
+                                                       ^^^^^^^^^^^^^
+AttributeError: module 'cv2' has no attribute 'FR_COSINE'
+
+[2026-05-11 13:50:11.985275] ERROR in Hit 1 for Session 35: module 'cv2' has no attribute 'FR_COSINE'
+Traceback (most recent call last):
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\attendance_service.py", line 140, in process_attendance_hit
+    score = ai.compare_faces(student.face_embedding, d_emb)
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\ai_service.py", line 102, in compare_faces
+    cosine_score = self.recognizer.match(feat1, feat2, cv2.FR_COSINE)
+                                                       ^^^^^^^^^^^^^
+AttributeError: module 'cv2' has no attribute 'FR_COSINE'
+
+[2026-05-11 13:50:50.037501] ERROR in Hit 2 for Session 35: module 'cv2' has no attribute 'FR_COSINE'
+Traceback (most recent call last):
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\attendance_service.py", line 140, in process_attendance_hit
+    score = ai.compare_faces(student.face_embedding, d_emb)
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\ai_service.py", line 102, in compare_faces
+    cosine_score = self.recognizer.match(feat1, feat2, cv2.FR_COSINE)
+                                                       ^^^^^^^^^^^^^
+AttributeError: module 'cv2' has no attribute 'FR_COSINE'
+
+[2026-05-11 15:34:52.446244] ERROR in Hit 1 for Session 36: module 'cv2' has no attribute 'FR_COSINE'
+Traceback (most recent call last):
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\attendance_service.py", line 140, in process_attendance_hit
+    score = ai.compare_faces(student.face_embedding, d_emb)
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\ai_service.py", line 102, in compare_faces
+    cosine_score = self.recognizer.match(feat1, feat2, cv2.FR_COSINE)
+                                                       ^^^^^^^^^^^^^
+AttributeError: module 'cv2' has no attribute 'FR_COSINE'
+
+[2026-05-11 15:35:31.162308] ERROR in Hit 2 for Session 36: module 'cv2' has no attribute 'FR_COSINE'
+Traceback (most recent call last):
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\attendance_service.py", line 140, in process_attendance_hit
+    score = ai.compare_faces(student.face_embedding, d_emb)
+  File "C:\Users\Hussain Farooqui\OneDrive\Desktop\Attendence MVP\backend\services\ai_service.py", line 102, in compare_faces
+    cosine_score = self.recognizer.match(feat1, feat2, cv2.FR_COSINE)
+                                                       ^^^^^^^^^^^^^
+AttributeError: module 'cv2' has no attribute 'FR_COSINE'
+

@@ -1,0 +1,213 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const CourseManagement = () => {
+  const [courses, setCourses]   = useState([]);
+  const [faculty, setFaculty]   = useState([]);
+  const [showCreate, setShowCreate] = useState(false);
+  const [showAssign, setShowAssign] = useState(null); // holds course being assigned
+  const [selectedFacultyId, setSelectedFacultyId] = useState('');
+  const [newCourse, setNewCourse] = useState({ name: '', code: '', faculty_id: '' });
+  const [msg, setMsg] = useState('');
+
+  useEffect(() => { fetchAll(); }, []);
+
+  const fetchAll = async () => {
+    try {
+      const [cRes, fRes] = await Promise.all([
+        axios.get('/api/admin/courses'),
+        axios.get('/api/admin/users'),
+      ]);
+      setCourses(cRes.data);
+      setFaculty(fRes.data.filter(u => u.role === 'Faculty'));
+    } catch (err) {
+      console.error('Failed to load data', err);
+    }
+  };
+
+  const flash = (text) => { setMsg(text); setTimeout(() => setMsg(''), 3000); };
+
+  // ── Create Course ─────────────────────────────────────────────────────────
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('/api/admin/courses', {
+        name: newCourse.name,
+        code: newCourse.code,
+        faculty_id: newCourse.faculty_id ? parseInt(newCourse.faculty_id) : null,
+      });
+      flash('Course created successfully!');
+      setShowCreate(false);
+      setNewCourse({ name: '', code: '', faculty_id: '' });
+      fetchAll();
+    } catch (err) {
+      flash(err.response?.data?.detail || 'Failed to create course');
+    }
+  };
+
+  // ── Assign Faculty ────────────────────────────────────────────────────────
+  const handleAssign = async () => {
+    if (!selectedFacultyId) return;
+    try {
+      const res = await axios.post('/api/admin/assign-course', {
+        course_id: showAssign.id,
+        faculty_id: parseInt(selectedFacultyId),
+      });
+      flash(res.data.message);
+      setShowAssign(null);
+      setSelectedFacultyId('');
+      fetchAll();
+    } catch (err) {
+      flash(err.response?.data?.detail || 'Assignment failed');
+    }
+  };
+
+  // ─────────────────────────────────────────────────────────────────────────
+  return (
+    <div className="main-content">
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h1>Course Management</h1>
+          <p style={{ color: '#666' }}>Create courses and assign them to faculty members.</p>
+        </div>
+        <button className="btn btn-primary" onClick={() => setShowCreate(true)}>+ New Course</button>
+      </div>
+
+      {/* Flash message */}
+      {msg && (
+        <div style={{ marginTop: 16, padding: '10px 16px', borderRadius: 8,
+          background: msg.includes('fail') || msg.includes('Failed') ? '#ffebee' : '#e8f5e9',
+          color:      msg.includes('fail') || msg.includes('Failed') ? '#c62828' : '#2e7d32',
+          fontWeight: 600 }}>
+          {msg}
+        </div>
+      )}
+
+      {/* Course Table */}
+      <div className="glass-card" style={{ marginTop: 24, padding: 20 }}>
+        <table className="table-container">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Code</th>
+              <th>Course Name</th>
+              <th>Assigned Faculty</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {courses.length === 0 && (
+              <tr><td colSpan={5} style={{ textAlign: 'center', color: '#999' }}>No courses yet. Click "+ New Course" to add one.</td></tr>
+            )}
+            {courses.map(c => (
+              <tr key={c.id}>
+                <td>{c.id}</td>
+                <td><code style={{ background: '#f0f4ff', padding: '2px 6px', borderRadius: 4 }}>{c.code}</code></td>
+                <td><strong>{c.name}</strong></td>
+                <td>
+                  <span style={{
+                    padding: '4px 10px', borderRadius: 12,
+                    background: c.faculty_name === 'Unassigned' ? '#fff3e0' : '#e8f5e9',
+                    color:      c.faculty_name === 'Unassigned' ? '#e65100' : '#2e7d32',
+                    fontWeight: 600, fontSize: 13,
+                  }}>
+                    {c.faculty_name === 'Unassigned' ? '⚠ Unassigned' : `✓ ${c.faculty_name}`}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    className="btn btn-primary"
+                    style={{ padding: '6px 14px', fontSize: 13 }}
+                    onClick={() => { setShowAssign(c); setSelectedFacultyId(c.faculty_id || ''); }}
+                  >
+                    Assign Faculty
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* ── Create Course Modal ── */}
+      {showCreate && (
+        <div style={overlay}>
+          <div className="glass-card" style={modal}>
+            <h2 style={{ marginBottom: 20 }}>New Course</h2>
+            <form onSubmit={handleCreate}>
+              <label style={labelStyle}>Course Name</label>
+              <input
+                placeholder="e.g. Artificial Intelligence"
+                style={inputStyle}
+                value={newCourse.name}
+                onChange={e => setNewCourse({ ...newCourse, name: e.target.value })}
+                required
+              />
+              <label style={labelStyle}>Course Code</label>
+              <input
+                placeholder="e.g. CS-401"
+                style={inputStyle}
+                value={newCourse.code}
+                onChange={e => setNewCourse({ ...newCourse, code: e.target.value })}
+                required
+              />
+              <label style={labelStyle}>Assign Faculty (optional)</label>
+              <select style={inputStyle} value={newCourse.faculty_id}
+                onChange={e => setNewCourse({ ...newCourse, faculty_id: e.target.value })}>
+                <option value="">— Assign later —</option>
+                {faculty.map(f => <option key={f.id} value={f.id}>{f.full_name} ({f.email})</option>)}
+              </select>
+
+              <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
+                <button type="submit" className="btn btn-primary">Create</button>
+                <button type="button" className="btn" onClick={() => setShowCreate(false)}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Assign Faculty Modal ── */}
+      {showAssign && (
+        <div style={overlay}>
+          <div className="glass-card" style={modal}>
+            <h2 style={{ marginBottom: 8 }}>Assign Faculty</h2>
+            <p style={{ color: '#555', marginBottom: 20 }}>
+              Course: <strong>{showAssign.name}</strong> ({showAssign.code})
+            </p>
+
+            <label style={labelStyle}>Select Faculty Member</label>
+            <select style={inputStyle} value={selectedFacultyId}
+              onChange={e => setSelectedFacultyId(e.target.value)}>
+              <option value="">— Select —</option>
+              {faculty.map(f => (
+                <option key={f.id} value={f.id}>{f.full_name} ({f.email})</option>
+              ))}
+            </select>
+
+            <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
+              <button className="btn btn-primary" onClick={handleAssign} disabled={!selectedFacultyId}>
+                Confirm Assignment
+              </button>
+              <button className="btn" onClick={() => { setShowAssign(null); setSelectedFacultyId(''); }}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ── Shared styles ──────────────────────────────────────────────────────────
+const overlay = {
+  position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
+  display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000,
+};
+const modal = { padding: 32, width: 480, background: 'white', borderRadius: 12 };
+const inputStyle = { width: '100%', padding: '10px 12px', marginBottom: 14, borderRadius: 6, border: '1px solid #ddd', fontSize: 14 };
+const labelStyle = { display: 'block', marginBottom: 4, fontWeight: 600, fontSize: 13, color: '#555' };
+
+export default CourseManagement;
