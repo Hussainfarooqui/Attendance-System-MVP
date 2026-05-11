@@ -1,13 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
+import os
+import uuid
+import json
 from ..models import database, schemas
 from ..services import auth_service, ai_service
 from pydantic import BaseModel
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
-import os
-import uuid
-from typing import Optional
 
 router = APIRouter(prefix="/api/admin", tags=["Admin"])
 
@@ -115,13 +114,13 @@ async def enroll_student(
     if db_student:
         db_student.full_name = full_name
         if file_path: db_student.image_path = file_path
-        if embedding: db_student.face_embedding = embedding
+        if embedding: db_student.face_embedding = json.dumps(embedding)
     else:
         db_student = schemas.Student(
             id=student_id,
             full_name=full_name,
             image_path=file_path,
-            face_embedding=embedding
+            face_embedding=json.dumps(embedding) if embedding else None
         )
         db.add(db_student)
     

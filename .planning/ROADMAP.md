@@ -4,9 +4,9 @@
 **Goal**: Working backend with database, authentication, and basic admin/faculty structures.
 
 - **Phase 1: Project Scaffold & Database**
-    - [ ] Initialize FastAPI project structure.
-    - [ ] Setup PostgreSQL with SQLAlchemy and Alembic.
-    - [ ] Create core models: User, Cluster, Course, Student.
+    - [x] Initialize FastAPI project structure.
+    - [x] Setup SQL Server (SSMS) with SQLAlchemy.
+    - [x] Create core models: User, Cluster, Course, Student.
 - **Phase 2: Auth & User Management**
     - [ ] Implement JWT Authentication.
     - [ ] Admin endpoints for User/Student CRUD.
@@ -33,6 +33,11 @@
     - [ ] Manual override table.
     - [ ] Exportable reports (CSV/PDF).
 
+- **Phase 7: Data Migration & Verification**
+    - [x] Create attendance_db in SSMS.
+    - [x] Migrate data from SQLite (attendance_mvp.db) to SQL Server.
+    - [x] Verify database connectivity and schema integrity.
+
 ## Status
 | Phase | Name | Status |
 |---|---|---|
@@ -42,3 +47,4 @@
 | 4 | Hit-Based Logic | ✅ Complete |
 | 5 | Admin UI | ✅ Complete |
 | 6 | Faculty UI & Reports | ✅ Complete |
+| 7 | Data Migration & Verification | ✅ Complete |
