@@ -30,14 +30,24 @@ const UserManagement = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    try {
+      await axios.delete(`/api/admin/users/${id}`);
+      fetchUsers();
+    } catch (err) {
+      alert(err.response?.data?.detail || "Failed to delete user");
+    }
+  };
+
   return (
     <div className="main-content">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="flex-between">
         <h1>User Management</h1>
         <button className="btn btn-primary" onClick={() => setShowModal(true)}>+ Add User</button>
       </div>
 
-      <div className="glass-card" style={{ marginTop: '30px', padding: '20px' }}>
+      <div className="glass-card" style={{ marginTop: '30px' }}>
         <table className="table-container">
           <thead>
             <tr>
@@ -45,6 +55,7 @@ const UserManagement = () => {
               <th>Email</th>
               <th>Role</th>
               <th>Created At</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -54,6 +65,15 @@ const UserManagement = () => {
                 <td>{u.email}</td>
                 <td><span style={{ padding: '4px 8px', borderRadius: '4px', background: u.role === 'Admin' ? '#ffe8e8' : '#e8f5ff', color: u.role === 'Admin' ? '#d9534f' : '#003366' }}>{u.role}</span></td>
                 <td>{new Date(u.created_at).toLocaleDateString()}</td>
+                <td>
+                  <button 
+                    onClick={() => handleDelete(u.id)}
+                    className="btn"
+                    style={{ background: '#ff4d4d', color: 'white', padding: '5px 12px' }}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -61,32 +81,36 @@ const UserManagement = () => {
       </div>
 
       {showModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-          <div className="glass-card" style={{ padding: '30px', width: '400px', background: 'white' }}>
+        <div className="modal-overlay">
+          <div className="modal-content">
             <h2>Add New User</h2>
             <form onSubmit={handleCreate} style={{ marginTop: '20px' }}>
               <input 
+                className="input-field"
                 placeholder="Full Name" 
-                style={{ width: '100%', padding: '10px', marginBottom: '10px' }} 
+                style={{ marginBottom: '10px' }} 
                 onChange={e => setFormData({...formData, full_name: e.target.value})}
                 required
               />
               <input 
+                className="input-field"
                 type="email" 
                 placeholder="Email Address" 
-                style={{ width: '100%', padding: '10px', marginBottom: '10px' }} 
+                style={{ marginBottom: '10px' }} 
                 onChange={e => setFormData({...formData, email: e.target.value})}
                 required
               />
               <input 
+                className="input-field"
                 type="password" 
                 placeholder="Password" 
-                style={{ width: '100%', padding: '10px', marginBottom: '10px' }} 
+                style={{ marginBottom: '10px' }} 
                 onChange={e => setFormData({...formData, password: e.target.value})}
                 required
               />
               <select 
-                style={{ width: '100%', padding: '10px', marginBottom: '20px' }}
+                className="input-field"
+                style={{ marginBottom: '20px' }}
                 onChange={e => setFormData({...formData, role: e.target.value})}
                 value={formData.role}
               >

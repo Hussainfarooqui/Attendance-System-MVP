@@ -63,7 +63,7 @@ const AttendanceSession = () => {
   return (
     <div className="main-content">
       {/* ── Header ── */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' }}>
+      <div className="flex-between" style={{ marginBottom: '32px' }}>
         <div>
           <h1 style={{ fontSize: '28px' }}>Live Attendance Session</h1>
           <p style={{ color: 'var(--text-muted)' }}>Session ID: <strong>#{sessionId}</strong> — AI monitoring active</p>
@@ -100,7 +100,7 @@ const AttendanceSession = () => {
       )}
 
       {/* ── Hit Status Cards ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px' }}>
         <HitCard label="AI Hit 1" subtitle="T+30s (Arrival)" done={hitStatus.hit1} color="var(--iqra-blue-light)" />
         <HitCard label="AI Hit 2" subtitle="T+60s (Stability)" done={hitStatus.hit2} color="var(--iqra-red)" />
         <SummaryCard label="Total Present" value={presentCount} type="present" />
@@ -109,7 +109,7 @@ const AttendanceSession = () => {
 
       {/* ── Results Table ── */}
       <div className="glass-card" style={{ marginTop: '32px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <div className="flex-between" style={{ marginBottom: '16px' }}>
           <h3 style={{ margin: 0 }}>Enrollment Results</h3>
           <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Polling every 4s</span>
         </div>
@@ -172,8 +172,8 @@ const AttendanceSession = () => {
 
       {/* ── Override Modal ── */}
       {overrideModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 26, 51, 0.6)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-          <div className="glass-card" style={{ padding: '32px', width: '480px', background: 'white' }}>
+        <div className="modal-overlay">
+          <div className="modal-content">
             <h2 style={{ marginBottom: '8px' }}>Manual Override</h2>
             <p style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>
               Student: <strong>{overrideModal.fullName}</strong> ({overrideModal.studentId})

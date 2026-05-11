@@ -69,7 +69,7 @@ const AcademicEnrollment = () => {
 
   return (
     <div className="main-content">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="flex-between">
         <h1>Academic Enrollment</h1>
         <button className="btn" onClick={enrollAllInAll} style={{ backgroundColor: '#2e7d32', color: 'white' }}>
           Enroll All in All Courses
@@ -82,18 +82,19 @@ const AcademicEnrollment = () => {
           padding: '10px', 
           borderRadius: '8px', 
           background: msg.includes('fail') ? '#ffebee' : '#e8f5e9',
-          color: msg.includes('fail') ? '#c62828' : '#2e7d32'
+          color: msg.includes('fail') ? '#c62828' : '#2e7d32',
+          fontWeight: 600
         }}>
           {msg}
         </div>
       )}
 
-      <div className="glass-card" style={{ marginTop: '30px', padding: '20px' }}>
+      <div className="glass-card" style={{ marginTop: '30px' }}>
         <h3>Quick Enrollment</h3>
-        <form onSubmit={handleEnroll} style={{ display: 'flex', gap: '15px', marginTop: '15px' }}>
+        <form onSubmit={handleEnroll} style={{ display: 'flex', gap: '15px', marginTop: '15px', flexWrap: 'wrap' }}>
           <select 
             className="input-field" 
-            style={{ flex: 1, padding: '10px' }}
+            style={{ flex: 1, minWidth: '200px' }}
             value={selectedStudent}
             onChange={e => setSelectedStudent(e.target.value)}
             required
@@ -104,7 +105,7 @@ const AcademicEnrollment = () => {
 
           <select 
             className="input-field" 
-            style={{ flex: 1, padding: '10px' }}
+            style={{ flex: 1, minWidth: '200px' }}
             value={selectedCourse}
             onChange={e => setSelectedCourse(e.target.value)}
             required
@@ -117,9 +118,9 @@ const AcademicEnrollment = () => {
         </form>
       </div>
 
-      <div className="glass-card" style={{ marginTop: '30px', padding: '20px' }}>
+      <div className="glass-card" style={{ marginTop: '30px' }}>
         <h3>Current Academic Enrollments</h3>
-        <table className="table-container" style={{ marginTop: '15px' }}>
+        <table className="table-container">
           <thead>
             <tr>
               <th>Student ID</th>
@@ -131,9 +132,9 @@ const AcademicEnrollment = () => {
           <tbody>
             {enrollments.map((e, index) => (
               <tr key={index}>
-                <td>{e.student_id}</td>
+                <td><code style={{ background: '#f0f4ff', padding: '2px 6px', borderRadius: 4 }}>{e.student_id}</code></td>
                 <td>{e.student_name}</td>
-                <td>{e.course_code}</td>
+                <td><code style={{ background: '#f1f5f9', padding: '2px 6px', borderRadius: 4 }}>{e.course_code}</code></td>
                 <td>{e.course_name}</td>
               </tr>
             ))}

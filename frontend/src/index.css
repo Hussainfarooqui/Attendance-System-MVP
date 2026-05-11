@@ -212,15 +212,77 @@ h1, h2, h3, h4 {
   box-shadow: 0 0 0 3px rgba(26, 68, 168, 0.1);
 }
 
-/* ── Utility ──────────────────────────────────────────────────────────────── */
+/* ── Responsive Design ─────────────────────────────────────────────────────── */
 
-.badge {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 80px;
+  }
+  .sidebar-header {
+    padding: 10px;
+  }
+  .sidebar-logo {
+    max-width: 50px;
+  }
+  .nav-link span {
+    display: none;
+  }
+  .main-content {
+    margin-left: 80px;
+    padding: 20px;
+  }
 }
 
-.badge-present { background: #DCFCE7; color: #166534; }
-.badge-absent { background: #FEE2E2; color: #991B1B; }
+@media (max-width: 768px) {
+  .sidebar {
+    display: none; /* Mobile should use a burger menu, but for now we'll just stack */
+  }
+  .main-content {
+    margin-left: 0;
+    padding: 15px;
+  }
+  .glass-card {
+    padding: 15px;
+    overflow-x: auto;
+  }
+  .table-container {
+    min-width: 600px; /* Allow horizontal scroll in table */
+  }
+  h1 {
+    font-size: 1.5rem;
+  }
+}
+
+/* ── Alignment Fixes ───────────────────────────────────────────────────────── */
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: var(--radius);
+  padding: 30px;
+  width: 95%;
+  max-width: 500px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}

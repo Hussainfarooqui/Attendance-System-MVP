@@ -218,3 +218,38 @@ def get_enrollments(db: Session = Depends(database.get_db), admin: schemas.User 
             "course_code": course.code if course else "Unknown"
         })
     return result
+
+# ─── Delete Functionality ──────────────────────────────────────────────────
+
+@router.delete("/users/{user_id}")
+def delete_user(user_id: int, db: Session = Depends(database.get_db), admin: schemas.User = Depends(auth_service.check_admin)):
+    user = db.query(schemas.User).filter(schemas.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Check if user is trying to delete themselves
+    if user.id == admin.id:
+        raise HTTPException(status_code=400, detail="Cannot delete your own admin account")
+    
+    # Check if user is faculty and assigned to courses
+    assigned_courses = db.query(schemas.Course).filter(schemas.Course.faculty_id == user_id).all()
+    for course in assigned_courses:
+        course.faculty_id = None  # Unassign faculty instead of deleting course
+    
+    db.delete(user)
+    db.commit()
+    return {"status": "success", "message": f"User {user.full_name} deleted successfully"}
+
+@router.delete("/students/{student_id}")
+def delete_student(student_id: str, db: Session = Depends(database.get_db), admin: schemas.User = Depends(auth_service.check_admin)):
+    student = db.query(schemas.Student).filter(schemas.Student.id == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    
+    # Delete related enrollments and attendance records first
+    db.query(schemas.Enrollment).filter(schemas.Enrollment.student_id == student_id).delete()
+    db.query(schemas.AttendanceRecord).filter(schemas.AttendanceRecord.student_id == student_id).delete()
+    
+    db.delete(student)
+    db.commit()
+    return {"status": "success", "message": f"Student {student.full_name} deleted successfully"}

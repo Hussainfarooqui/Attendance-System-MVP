@@ -95,6 +95,16 @@ const StudentEnrollment = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm(`Are you sure you want to delete student ${id}?`)) return;
+    try {
+      await axios.delete(`/api/admin/students/${id}`);
+      fetchStudents();
+    } catch (err) {
+      alert("Failed to delete student");
+    }
+  };
+
   const closeModal = () => {
     setShowModal(false);
     setStudentId('');
@@ -111,12 +121,12 @@ const StudentEnrollment = () => {
 
   return (
     <div className="main-content">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="flex-between">
         <h1>Biometric Enrollment</h1>
         <button className="btn btn-primary" onClick={() => setShowModal(true)}>+ New Student</button>
       </div>
 
-      <div className="glass-card" style={{ marginTop: '30px', padding: '20px' }}>
+      <div className="glass-card" style={{ marginTop: '30px' }}>
         <table className="table-container">
           <thead>
             <tr>
@@ -124,6 +134,7 @@ const StudentEnrollment = () => {
               <th>Full Name</th>
               <th>Enrollment Date</th>
               <th>Biometric Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -139,6 +150,15 @@ const StudentEnrollment = () => {
                     <span style={{ color: '#c62828', fontWeight: 600 }}>❌ Missing (Manual only)</span>
                   )}
                 </td>
+                <td>
+                  <button 
+                    onClick={() => handleDelete(s.id)}
+                    className="btn"
+                    style={{ background: '#ff4d4d', color: 'white', padding: '5px 12px' }}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -146,15 +166,15 @@ const StudentEnrollment = () => {
       </div>
 
       {showModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-          <div className="glass-card" style={{ padding: '30px', width: '500px', background: 'white', maxHeight: '90vh', overflowY: 'auto' }}>
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ width: '500px', maxHeight: '90vh', overflowY: 'auto' }}>
             <h2 style={{ marginBottom: '20px' }}>Student Enrollment</h2>
             
             <div style={{ marginBottom: '15px' }}>
               <label style={labelStyle}>Student ID (Required)</label>
               <input 
+                className="input-field"
                 placeholder="e.g. 2021-IU-123" 
-                style={inputStyle} 
                 value={studentId} 
                 onChange={e => setStudentId(e.target.value)} 
               />
@@ -163,8 +183,8 @@ const StudentEnrollment = () => {
             <div style={{ marginBottom: '20px' }}>
               <label style={labelStyle}>Complete Name (Required)</label>
               <input 
+                className="input-field"
                 placeholder="e.g. John Doe" 
-                style={inputStyle} 
                 value={fullName} 
                 onChange={e => setFullName(e.target.value)} 
               />
@@ -239,7 +259,6 @@ const StudentEnrollment = () => {
   );
 };
 
-const inputStyle = { width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px', boxSizing: 'border-box' };
 const labelStyle = { display: 'block', marginBottom: '5px', fontWeight: '600', color: '#555', fontSize: '13px' };
 const placeholderStyle = { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', flexDirection: 'column', color: '#999' };
 

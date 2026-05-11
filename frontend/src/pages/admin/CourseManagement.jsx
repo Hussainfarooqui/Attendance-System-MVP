@@ -27,7 +27,6 @@ const CourseManagement = () => {
 
   const flash = (text) => { setMsg(text); setTimeout(() => setMsg(''), 3000); };
 
-  // ── Create Course ─────────────────────────────────────────────────────────
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
@@ -45,7 +44,6 @@ const CourseManagement = () => {
     }
   };
 
-  // ── Assign Faculty ────────────────────────────────────────────────────────
   const handleAssign = async () => {
     if (!selectedFacultyId) return;
     try {
@@ -62,11 +60,9 @@ const CourseManagement = () => {
     }
   };
 
-  // ─────────────────────────────────────────────────────────────────────────
   return (
     <div className="main-content">
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="flex-between">
         <div>
           <h1>Course Management</h1>
           <p style={{ color: '#666' }}>Create courses and assign them to faculty members.</p>
@@ -74,7 +70,6 @@ const CourseManagement = () => {
         <button className="btn btn-primary" onClick={() => setShowCreate(true)}>+ New Course</button>
       </div>
 
-      {/* Flash message */}
       {msg && (
         <div style={{ marginTop: 16, padding: '10px 16px', borderRadius: 8,
           background: msg.includes('fail') || msg.includes('Failed') ? '#ffebee' : '#e8f5e9',
@@ -84,8 +79,7 @@ const CourseManagement = () => {
         </div>
       )}
 
-      {/* Course Table */}
-      <div className="glass-card" style={{ marginTop: 24, padding: 20 }}>
+      <div className="glass-card" style={{ marginTop: 24 }}>
         <table className="table-container">
           <thead>
             <tr>
@@ -130,30 +124,32 @@ const CourseManagement = () => {
         </table>
       </div>
 
-      {/* ── Create Course Modal ── */}
       {showCreate && (
-        <div style={overlay}>
-          <div className="glass-card" style={modal}>
+        <div className="modal-overlay">
+          <div className="modal-content">
             <h2 style={{ marginBottom: 20 }}>New Course</h2>
             <form onSubmit={handleCreate}>
               <label style={labelStyle}>Course Name</label>
               <input
+                className="input-field"
                 placeholder="e.g. Artificial Intelligence"
-                style={inputStyle}
+                style={{ marginBottom: 14 }}
                 value={newCourse.name}
                 onChange={e => setNewCourse({ ...newCourse, name: e.target.value })}
                 required
               />
               <label style={labelStyle}>Course Code</label>
               <input
+                className="input-field"
                 placeholder="e.g. CS-401"
-                style={inputStyle}
+                style={{ marginBottom: 14 }}
                 value={newCourse.code}
                 onChange={e => setNewCourse({ ...newCourse, code: e.target.value })}
                 required
               />
               <label style={labelStyle}>Assign Faculty (optional)</label>
-              <select style={inputStyle} value={newCourse.faculty_id}
+              <select className="input-field" value={newCourse.faculty_id}
+                style={{ marginBottom: 14 }}
                 onChange={e => setNewCourse({ ...newCourse, faculty_id: e.target.value })}>
                 <option value="">— Assign later —</option>
                 {faculty.map(f => <option key={f.id} value={f.id}>{f.full_name} ({f.email})</option>)}
@@ -168,17 +164,17 @@ const CourseManagement = () => {
         </div>
       )}
 
-      {/* ── Assign Faculty Modal ── */}
       {showAssign && (
-        <div style={overlay}>
-          <div className="glass-card" style={modal}>
+        <div className="modal-overlay">
+          <div className="modal-content">
             <h2 style={{ marginBottom: 8 }}>Assign Faculty</h2>
             <p style={{ color: '#555', marginBottom: 20 }}>
               Course: <strong>{showAssign.name}</strong> ({showAssign.code})
             </p>
 
             <label style={labelStyle}>Select Faculty Member</label>
-            <select style={inputStyle} value={selectedFacultyId}
+            <select className="input-field" value={selectedFacultyId}
+              style={{ marginBottom: 14 }}
               onChange={e => setSelectedFacultyId(e.target.value)}>
               <option value="">— Select —</option>
               {faculty.map(f => (
@@ -201,13 +197,6 @@ const CourseManagement = () => {
   );
 };
 
-// ── Shared styles ──────────────────────────────────────────────────────────
-const overlay = {
-  position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
-  display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000,
-};
-const modal = { padding: 32, width: 480, background: 'white', borderRadius: 12 };
-const inputStyle = { width: '100%', padding: '10px 12px', marginBottom: 14, borderRadius: 6, border: '1px solid #ddd', fontSize: 14 };
 const labelStyle = { display: 'block', marginBottom: 4, fontWeight: 600, fontSize: 13, color: '#555' };
 
 export default CourseManagement;
