@@ -23,11 +23,11 @@ class AIService:
             self._ensure_model(DETECTOR_URL, DETECTOR_PATH)
             self._ensure_model(RECOGNIZER_URL, RECOGNIZER_PATH)
             
-            # Initialize detector
-            self.detector = cv2.FaceDetectorYN.create(DETECTOR_PATH, "", (320, 320))
+            # Initialize detector (score_threshold=0.6, nms_threshold=0.3)
+            self.detector = cv2.FaceDetectorYN.create(DETECTOR_PATH, "", (320, 320), 0.6, 0.3)
             # Initialize recognizer
             self.recognizer = cv2.FaceRecognizerSF.create(RECOGNIZER_PATH, "")
-            print("AI Engine: Models loaded successfully.")
+            print("AI Engine: Models loaded successfully. Detection threshold: 0.6")
         except Exception as e:
             print(f"AI Engine Warning: Could not load models ({e}). Switching to Mock Mode.")
             self.mock_mode = True
@@ -79,8 +79,10 @@ class AIService:
         self.detector.setInputSize((width, height))
         _, faces = self.detector.detect(img)
         if faces is None:
+            # print("DEBUG: No faces detected in image.")
             return []
         
+        # print(f"DEBUG: Detector found {len(faces)} potential faces.")
         results = []
         for face in faces:
             # face[0:4] are x, y, width, height

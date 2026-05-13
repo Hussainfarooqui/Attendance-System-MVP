@@ -3,6 +3,6 @@ import axios from 'axios';
 
 // Single source of truth for the backend URL
 // Do NOT set a global Content-Type — each request type sets its own
-axios.defaults.baseURL = 'http://localhost:8005';
+axios.defaults.baseURL = 'http://localhost:8000';
 
 export default axios;

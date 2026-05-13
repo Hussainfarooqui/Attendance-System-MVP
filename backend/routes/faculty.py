@@ -5,6 +5,9 @@ from ..models import database, schemas
 from ..services import auth_service, attendance_service
 from pydantic import BaseModel
 from datetime import datetime
+import io
+from fpdf import FPDF
+from fastapi.responses import StreamingResponse
 
 router = APIRouter(prefix="/api/faculty", tags=["Faculty"])
 
@@ -144,3 +147,70 @@ def get_cumulative_report(
         })
     
     return report
+
+@router.get("/courses/{course_id}/export-pdf")
+def export_attendance_pdf(
+    course_id: int, 
+    db: Session = Depends(database.get_db), 
+    faculty: schemas.User = Depends(auth_service.check_faculty)
+):
+    # 1. Get Data (Reuse logic from get_cumulative_report)
+    course = db.query(schemas.Course).filter(schemas.Course.id == course_id).first()
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+        
+    enrollments = db.query(schemas.Enrollment).filter(schemas.Enrollment.course_id == course_id).all()
+    sessions = db.query(schemas.Session).filter(schemas.Session.course_id == course_id).all()
+    session_ids = [s.id for s in sessions]
+    
+    # 2. Generate PDF
+    pdf = FPDF()
+    pdf.add_page()
+    
+    # Header
+    pdf.set_font("Arial", "B", 16)
+    pdf.cell(190, 10, "Attendance Report", 0, 1, "C")
+    pdf.set_font("Arial", "", 12)
+    pdf.cell(190, 10, f"Course: {course.name} ({course.code})", 0, 1, "C")
+    pdf.cell(190, 10, f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M')}", 0, 1, "C")
+    pdf.ln(10)
+    
+    # Table Header
+    pdf.set_fill_color(241, 245, 249)
+    pdf.set_font("Arial", "B", 10)
+    pdf.cell(30, 10, "Student ID", 1, 0, "C", True)
+    pdf.cell(70, 10, "Full Name", 1, 0, "C", True)
+    pdf.cell(30, 10, "Present", 1, 0, "C", True)
+    pdf.cell(30, 10, "Total", 1, 0, "C", True)
+    pdf.cell(30, 10, "Percentage", 1, 1, "C", True)
+    
+    # Table Rows
+    pdf.set_font("Arial", "", 10)
+    for enr in enrollments:
+        student = db.query(schemas.Student).filter(schemas.Student.id == enr.student_id).first()
+        records = db.query(schemas.AttendanceRecord).filter(
+            schemas.AttendanceRecord.session_id.in_(session_ids),
+            schemas.AttendanceRecord.student_id == enr.student_id
+        ).all()
+        
+        present_count = sum(1 for r in records if r.final_status == schemas.AttendanceStatus.PRESENT)
+        total_sessions = len(session_ids)
+        percentage = (present_count / total_sessions * 100) if total_sessions > 0 else 0
+        
+        pdf.cell(30, 10, str(enr.student_id), 1)
+        pdf.cell(70, 10, str(student.full_name if student else "Unknown"), 1)
+        pdf.cell(30, 10, str(present_count), 1, 0, "C")
+        pdf.cell(30, 10, str(total_sessions), 1, 0, "C")
+        pdf.cell(30, 10, f"{percentage:.1f}%", 1, 1, "C")
+    
+    # Output to buffer
+    pdf_output = io.BytesIO()
+    pdf_content = pdf.output()
+    pdf_output.write(pdf_content)
+    pdf_output.seek(0)
+    
+    return StreamingResponse(
+        pdf_output, 
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename=attendance_report_{course.code}.pdf"}
+    )

@@ -1,0 +1,119 @@
+This revised Software Requirements Specification (SRS) is tailored specifically for your Prototype/MVP scale. It strips away enterprise-level complexities like sentiment analysis and multi-node GPU clusters, focusing instead on the core AI + CV attendance workflow, the "Hit" system, and Role-Based Access Control (RBAC).
+
+SOFTWARE REQUIREMENTS SPECIFICATION (SRS)
+Project: AI-Driven Automated Attendance System (MVP Prototype)
+Version: 1.0 (Prototype)
+Target Institution: IQRA University (IU) 
+Focus: Core CV Engine, Hit-Based Attendance, and Admin/Faculty Workflows
+
+1. System Overview
+The system is a web-based portal designed to automate student attendance using Computer Vision. It replaces manual signing with a "Scheduled Hit" system where the camera automatically detects and marks students at specific intervals during a session.
+1.1 User Roles & Access Control
+The system implements a strict Role-Based Access Control (RBAC) model with a centralized authentication page.
+Export to Sheets
+
+2. Functional Requirements
+2.1 Admin Management Module
+Course Clustering: Admin shall be able to group courses into logical clusters (e.g., AI, DSA, Information Security). 
+User Management: Admin shall create and remove Faculty and Student profiles.
+Student Enrollment & Biometrics:
+Upload: Support for bulk import via PDF/CSV or database formats.
+Image Capture: Beside the upload option, a "Take Picture" button must access the live camera to capture the student's face for model training.
+Policy Configuration: Admin sets university-level rules (e.g., 75% Attendance Rule—students falling below this are flagged in Red).
+2.2 Faculty Dashboard & Attendance Workflow
+Course View: Upon login, faculty see only their assigned courses.
+Session Structure: Each course is structured into 14 Weeks, with 2 Sessions per week.
+The "Hit" System Logic:
+Each session consists of 2 Attendance Hits.
+Trigger: When the session starts (e.g., 1:00 PM), the teacher clicks "Start AI Attendance."
+Automation: The first hit activates automatically at a threshold (e.g., T+20 mins). The camera detects students, marks them, and turns off. The process repeats for the second hit.
+Manual Override: At the end of the session, the system displays a full list of enrolled students. Faculty can manually change a status (e.g., from Absent to Present) before clicking Save.
+2.3 AI & Computer Vision Engine (MVP Scale)
+Detection & Recognition: The engine must identify all detected students against the trained dataset.
+Status Assignment: Students detected in the hits are marked "Present"; all others are defaulted to "Absent."
+Training: The system must allow for model training based on the images captured/uploaded by the Admin.
+
+3. Data Requirements
+3.1 Attendance Reports
+The system must generate three specific report types for Faculty:
+Course Report: Cumulative attendance for all students in a course.
+Classroom Report: Attendance data filtered by physical classroom location.
+Individual Student Report: A detailed view of a single student's attendance across a specific course's sessions.
+
+4. System Architecture (Prototype)
+4.1 Workflow Diagram
+4.2 Technical Stack (Recommended for MVP)
+Frontend: Streamlit or React (based on your proficiency in Python-based UI tools). 
+Backend: FastAPI or Flask.
+CV Engine: OpenCV with ArcFace or FaceNet for embeddings (high accuracy for identity fidelity).
+Database: SQLite or PostgreSQL for storing student metadata and attendance "hits."
+
+5. Non-Functional Requirements
+Identity Fidelity: The CV engine must maintain 100% accuracy in facial structure recognition, ensuring no changes to student identity during processing. 
+Security: Authentication is required for all dashboard access; session data must be encrypted.
+Efficiency: The "Hit" detection should complete within seconds to ensure the camera does not remain active longer than necessary.
+
+6. Implementation Notes for Prototype
+Note: Sentiment analysis is explicitly excluded from this version to focus on the stability of the attendance hits and the accuracy of the recognition engine. The system should prioritize "clean" data entry for the training set (Admin side) to ensure the AI performs well during live sessions.
+
+1. User & Access Control (RBAC)
+This table handles the authentication and ensures Admins and Faculty are redirected to their respective dashboards upon login. 
+users
+user_id (PK)
+full_name
+email (Unique)
+password_hash
+role (Enum: 'Admin', 'Faculty') 
+created_at
+
+2. Academic Structure & Clustering
+The system organizes courses into clusters (e.g., AI, DSA, Information Security) as defined in your requirements. 
+clusters
+cluster_id (PK)
+cluster_name (e.g., 'Artificial Intelligence') 
+courses
+course_id (PK)
+course_code
+course_name
+cluster_id (FK) 
+faculty_id (FK -> users.user_id) 
+total_weeks (Default: 14) 
+classrooms
+room_id (PK)
+room_number
+camera_rtsp_url (For the CV engine to access the live feed) 
+
+3. Student Management & Biometrics
+This table includes the "Take Picture" requirement for training the AI model. 
+students
+student_id (PK / University ID) 
+full_name
+enrollment_date
+reference_image_path (Path to the image captured via "Take Picture") 
+face_embedding (The 512-d vector extracted for the AI engine) 
+enrollments
+enrollment_id (PK)
+student_id (FK)
+course_id (FK)
+
+4. The "Hit-Based" Attendance Engine
+This is the heart of your MVP. It tracks the 14 weeks, 2 sessions per week, and the 2 threshold hits per session. 
+sessions
+session_id (PK)
+course_id (FK)
+room_id (FK)
+week_number (1–14) 
+session_number (1 or 2) 
+actual_start_time
+attendance_records
+attendance_id (PK)
+session_id (FK)
+student_id (FK)
+hit_1_present (Boolean: Marked at 20-min threshold) 
+hit_2_present (Boolean: Marked at second threshold) 
+final_status (Enum: 'Present', 'Absent') 
+is_manual_override (Boolean) 
+override_reason (Text) 
+
+
+

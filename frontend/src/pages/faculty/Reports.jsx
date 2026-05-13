@@ -65,8 +65,28 @@ const Reports = () => {
     document.body.removeChild(link);
   };
 
+  const handleExportPDF = async () => {
+    if (!selectedCourse) return;
+    try {
+      const response = await axios.get(`/api/faculty/courses/${selectedCourse}/export-pdf`, {
+        responseType: 'blob'
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      const courseName = courses.find(c => c.id === selectedCourse)?.name || 'course';
+      link.setAttribute('download', `attendance_report_${courseName}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error("Failed to export PDF", err);
+      alert("Failed to generate PDF report");
+    }
+  };
+
   return (
-    <div className="main-content" style={{ padding: '40px' }}>
+    <div className="main-content">
       <div style={{ marginBottom: '32px' }}>
         <h1 style={{ fontSize: '32px', color: 'var(--iqra-blue)' }}>Attendance Reports</h1>
         <p style={{ color: '#64748B' }}>Analyze and export cumulative academic attendance records.</p>
@@ -105,13 +125,23 @@ const Reports = () => {
                 Course: <strong>{courses.find(c => c.id === selectedCourse)?.name}</strong>
               </p>
             </div>
-            <button 
-              className="btn btn-gold" 
-              onClick={handleExportCSV}
-              disabled={reportData.length === 0}
-            >
-              Export CSV Report
-            </button>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button 
+                className="btn" 
+                style={{ background: '#E2E8F0', color: 'var(--iqra-blue)' }}
+                onClick={handleExportCSV}
+                disabled={reportData.length === 0}
+              >
+                Export CSV
+              </button>
+              <button 
+                className="btn btn-gold" 
+                onClick={handleExportPDF}
+                disabled={reportData.length === 0}
+              >
+                Export PDF Report
+              </button>
+            </div>
           </div>
 
           {loading ? (

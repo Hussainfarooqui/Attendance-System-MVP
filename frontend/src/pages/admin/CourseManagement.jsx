@@ -19,7 +19,7 @@ const CourseManagement = () => {
         axios.get('/api/admin/users'),
       ]);
       setCourses(cRes.data);
-      setFaculty(fRes.data.filter(u => u.role === 'Faculty'));
+      setFaculty(fRes.data.filter(u => u.role === 'FACULTY'));
     } catch (err) {
       console.error('Failed to load data', err);
     }
@@ -60,6 +60,17 @@ const CourseManagement = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this course? This will remove all related sessions and attendance records.")) return;
+    try {
+      await axios.delete(`/api/admin/courses/${id}`);
+      flash('Course deleted successfully!');
+      fetchAll();
+    } catch (err) {
+      flash(err.response?.data?.detail || 'Failed to delete course');
+    }
+  };
+
   return (
     <div className="main-content">
       <div className="flex-between">
@@ -87,7 +98,7 @@ const CourseManagement = () => {
               <th>Code</th>
               <th>Course Name</th>
               <th>Assigned Faculty</th>
-              <th>Action</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -110,13 +121,22 @@ const CourseManagement = () => {
                   </span>
                 </td>
                 <td>
-                  <button
-                    className="btn btn-primary"
-                    style={{ padding: '6px 14px', fontSize: 13 }}
-                    onClick={() => { setShowAssign(c); setSelectedFacultyId(c.faculty_id || ''); }}
-                  >
-                    Assign Faculty
-                  </button>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button
+                      className="btn btn-primary"
+                      style={{ padding: '6px 14px', fontSize: 13 }}
+                      onClick={() => { setShowAssign(c); setSelectedFacultyId(c.faculty_id || ''); }}
+                    >
+                      Assign
+                    </button>
+                    <button
+                      className="btn"
+                      style={{ padding: '6px 14px', fontSize: 13, background: '#ff4d4d', color: 'white' }}
+                      onClick={() => handleDelete(c.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

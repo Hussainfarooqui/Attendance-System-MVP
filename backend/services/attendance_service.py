@@ -117,6 +117,8 @@ def process_attendance_hit(session_id: int, hit_number: int):
             last_frame = frame.copy()
             # Detect and Annotate in Real-Time
             detection_results = ai.detect_and_embed(frame)
+            if detection_results:
+                print(f"DEBUG: Detected {len(detection_results)} faces in current frame.")
             
             course_id = session.course_id
             enrolled_students = (
@@ -137,12 +139,21 @@ def process_attendance_hit(session_id: int, hit_number: int):
                 for student in enrolled_students:
                     if not student.face_embedding:
                         continue
-                    score = ai.compare_faces(student.face_embedding, d_emb)
-                    if score > 0.363:
-                        final_matched_ids.add(student.id)
-                        student_label = f"{student.full_name} ({student.id})"
-                        match_found = True
-                        break
+                    
+                    # Parse embedding if it's a string
+                    try:
+                        import json
+                        s_emb = json.loads(student.face_embedding) if isinstance(student.face_embedding, str) else student.face_embedding
+                        score = ai.compare_faces(s_emb, d_emb)
+                        if score > 0.363:
+                            final_matched_ids.add(student.id)
+                            student_label = f"{student.full_name} ({student.id})"
+                            match_found = True
+                            print(f"DEBUG: Match found for {student.full_name} (Score: {score:.3f})")
+                            break
+                    except Exception as e:
+                        print(f"DEBUG: Error parsing/comparing embedding for student {student.id}: {e}")
+                        continue
                 
                 color = (0, 255, 0) if match_found else (0, 0, 255)
                 x, y, w, h = bbox

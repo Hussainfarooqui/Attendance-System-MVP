@@ -4,7 +4,7 @@ import axios from 'axios';
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({ full_name: '', email: '', password: '', role: 'Faculty' });
+  const [formData, setFormData] = useState({ full_name: '', email: '', password: '', role: 'FACULTY' });
 
   useEffect(() => {
     fetchUsers();
@@ -26,7 +26,7 @@ const UserManagement = () => {
       setShowModal(false);
       fetchUsers();
     } catch (err) {
-      alert("Failed to create user");
+      alert(err.response?.data?.detail || "Failed to create user");
     }
   };
 
@@ -63,7 +63,7 @@ const UserManagement = () => {
               <tr key={u.id}>
                 <td>{u.full_name}</td>
                 <td>{u.email}</td>
-                <td><span style={{ padding: '4px 8px', borderRadius: '4px', background: u.role === 'Admin' ? '#ffe8e8' : '#e8f5ff', color: u.role === 'Admin' ? '#d9534f' : '#003366' }}>{u.role}</span></td>
+                <td><span style={{ padding: '4px 8px', borderRadius: '4px', background: u.role === 'ADMIN' ? '#ffe8e8' : '#e8f5ff', color: u.role === 'ADMIN' ? '#d9534f' : '#003366' }}>{u.role}</span></td>
                 <td>{new Date(u.created_at).toLocaleDateString()}</td>
                 <td>
                   <button 
@@ -114,8 +114,8 @@ const UserManagement = () => {
                 onChange={e => setFormData({...formData, role: e.target.value})}
                 value={formData.role}
               >
-                <option value="Faculty">Faculty</option>
-                <option value="Admin">Admin</option>
+                <option value="FACULTY">Faculty Member</option>
+                <option value="ADMIN">System Administrator</option>
               </select>
               
               <div style={{ display: 'flex', gap: '10px' }}>

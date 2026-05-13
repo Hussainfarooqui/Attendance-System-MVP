@@ -15,7 +15,7 @@ Provides high-fidelity, automated attendance tracking that reduces faculty workl
 - **Frontend**: React (SPA)
 - **Backend**: FastAPI
 - **CV Engine**: OpenCV + ArcFace/FaceNet
-- **Database**: PostgreSQL (Dockerized)
+- **Database**: Microsoft SQL Server (SSMS)
 
 ## User Roles
 1. **Admin**: Project management, user/student enrollment, biometric capture.

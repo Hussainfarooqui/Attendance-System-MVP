@@ -253,3 +253,20 @@ def delete_student(student_id: str, db: Session = Depends(database.get_db), admi
     db.delete(student)
     db.commit()
     return {"status": "success", "message": f"Student {student.full_name} deleted successfully"}
+@router.delete("/courses/{course_id}")
+def delete_course(course_id: int, db: Session = Depends(database.get_db), admin: schemas.User = Depends(auth_service.check_admin)):
+    course = db.query(schemas.Course).filter(schemas.Course.id == course_id).first()
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+    
+    # Delete related enrollments, sessions, and attendance records first
+    db.query(schemas.Enrollment).filter(schemas.Enrollment.course_id == course_id).delete()
+    
+    sessions = db.query(schemas.Session).filter(schemas.Session.course_id == course_id).all()
+    session_ids = [s.id for s in sessions]
+    db.query(schemas.AttendanceRecord).filter(schemas.AttendanceRecord.session_id.in_(session_ids)).delete()
+    db.query(schemas.Session).filter(schemas.Session.course_id == course_id).delete()
+    
+    db.delete(course)
+    db.commit()
+    return {"status": "success", "message": f"Course {course.name} deleted successfully"}

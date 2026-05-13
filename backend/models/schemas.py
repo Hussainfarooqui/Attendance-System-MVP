@@ -5,8 +5,8 @@ from .database import Base
 import enum
 
 class UserRole(str, enum.Enum):
-    ADMIN = "Admin"
-    FACULTY = "Faculty"
+    ADMIN = "ADMIN"
+    FACULTY = "FACULTY"
 
 class AttendanceStatus(str, enum.Enum):
     PRESENT = "Present"

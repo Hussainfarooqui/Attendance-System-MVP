@@ -37,8 +37,9 @@ const Login = () => {
       padding: '20px'
     }}>
       <div className="glass-card" style={{ 
-        padding: '48px', 
-        width: '450px', 
+        padding: '36px', 
+        width: '95%',
+        maxWidth: '420px', 
         textAlign: 'center',
         boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
         border: '1px solid rgba(255,255,255,0.1)'

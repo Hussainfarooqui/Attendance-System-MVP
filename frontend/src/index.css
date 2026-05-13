@@ -52,7 +52,7 @@ h1, h2, h3, h4 {
 }
 
 .sidebar {
-  width: 280px;
+  width: 240px;
   background: var(--iqra-blue);
   color: white;
   padding: 0;
@@ -65,7 +65,7 @@ h1, h2, h3, h4 {
 }
 
 .sidebar-header {
-  padding: 24px;
+  padding: 20px;
   background: #FFFFFF;
   display: flex;
   justify-content: center;
@@ -76,24 +76,25 @@ h1, h2, h3, h4 {
 .sidebar-logo {
   width: 100%;
   height: auto;
-  max-width: 180px;
+  max-width: 160px;
 }
 
 .sidebar-nav {
-  padding: 24px 16px;
+  padding: 15px 12px;
   flex: 1;
 }
 
 .nav-link {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
+  padding: 10px 14px;
   color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   border-radius: 8px;
   margin-bottom: 4px;
   font-weight: 500;
   transition: var(--transition);
+  font-size: 14px;
 }
 
 .nav-link:hover {
@@ -109,9 +110,10 @@ h1, h2, h3, h4 {
 
 .main-content {
   flex: 1;
-  margin-left: 280px;
-  padding: 40px;
-  max-width: 1600px;
+  margin-left: 240px;
+  padding: 24px 32px;
+  max-width: 1300px;
+  margin-right: auto;
 }
 
 /* ── Components ────────────────────────────────────────────────────────────── */
@@ -235,7 +237,30 @@ h1, h2, h3, h4 {
 
 @media (max-width: 768px) {
   .sidebar {
-    display: none; /* Mobile should use a burger menu, but for now we'll just stack */
+    width: 100%;
+    height: auto;
+    position: relative;
+    box-shadow: none;
+  }
+  .sidebar-header {
+    padding: 15px;
+  }
+  .sidebar-logo {
+    max-width: 120px;
+  }
+  .sidebar-nav {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px;
+    gap: 10px;
+  }
+  .nav-link {
+    margin-bottom: 0;
+    white-space: nowrap;
+    padding: 8px 16px;
+  }
+  .nav-link span {
+    display: block;
   }
   .main-content {
     margin-left: 0;
@@ -246,7 +271,7 @@ h1, h2, h3, h4 {
     overflow-x: auto;
   }
   .table-container {
-    min-width: 600px; /* Allow horizontal scroll in table */
+    min-width: 600px;
   }
   h1 {
     font-size: 1.5rem;

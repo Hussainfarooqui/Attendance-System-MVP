@@ -35,7 +35,7 @@ const Layout = ({ children }) => {
             {user.role} Dashboard
           </div>
           
-          {user.role === 'Admin' && (
+          {user.role === 'ADMIN' && (
             <>
               <NavLink to="/admin/users" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>
                 <span>User Management</span>
@@ -52,7 +52,7 @@ const Layout = ({ children }) => {
             </>
           )}
 
-          {user.role === 'Faculty' && (
+          {user.role === 'FACULTY' && (
             <>
               <NavLink to="/faculty/courses" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>
                 <span>My Courses</span>
@@ -110,27 +110,27 @@ function App() {
 
           {/* Admin Routes */}
           <Route path="/admin/users" element={
-            <ProtectedRoute role="Admin"><Layout><UserManagement /></Layout></ProtectedRoute>
+            <ProtectedRoute role="ADMIN"><Layout><UserManagement /></Layout></ProtectedRoute>
           } />
           <Route path="/admin/students" element={
-            <ProtectedRoute role="Admin"><Layout><StudentEnrollment /></Layout></ProtectedRoute>
+            <ProtectedRoute role="ADMIN"><Layout><StudentEnrollment /></Layout></ProtectedRoute>
           } />
           <Route path="/admin/academic" element={
-            <ProtectedRoute role="Admin"><Layout><AcademicEnrollment /></Layout></ProtectedRoute>
+            <ProtectedRoute role="ADMIN"><Layout><AcademicEnrollment /></Layout></ProtectedRoute>
           } />
           <Route path="/admin/courses" element={
-            <ProtectedRoute role="Admin"><Layout><CourseManagement /></Layout></ProtectedRoute>
+            <ProtectedRoute role="ADMIN"><Layout><CourseManagement /></Layout></ProtectedRoute>
           } />
 
           {/* Faculty Routes */}
           <Route path="/faculty/courses" element={
-            <ProtectedRoute role="Faculty"><Layout><CourseList /></Layout></ProtectedRoute>
+            <ProtectedRoute role="FACULTY"><Layout><CourseList /></Layout></ProtectedRoute>
           } />
           <Route path="/faculty/sessions/:sessionId" element={
-            <ProtectedRoute role="Faculty"><Layout><AttendanceSession /></Layout></ProtectedRoute>
+            <ProtectedRoute role="FACULTY"><Layout><AttendanceSession /></Layout></ProtectedRoute>
           } />
           <Route path="/faculty/reports" element={
-            <ProtectedRoute role="Faculty"><Layout><Reports /></Layout></ProtectedRoute>
+            <ProtectedRoute role="FACULTY"><Layout><Reports /></Layout></ProtectedRoute>
           } />
 
           {/* Fallback */}
