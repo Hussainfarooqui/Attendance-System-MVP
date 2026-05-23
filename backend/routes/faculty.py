@@ -36,35 +36,52 @@ async def start_session(
     db: Session = Depends(database.get_db), 
     faculty: schemas.User = Depends(auth_service.check_faculty)
 ):
-    # Create session
-    new_session = schemas.Session(
-        course_id=data.course_id,
-        room_id=data.room_id,
-        week_number=data.week_number,
-        session_number=data.session_number,
-        actual_start_time=datetime.now()
-    )
-    db.add(new_session)
+    if data.session_number > 32:
+        raise HTTPException(status_code=400, detail="Maximum 32 sessions allowed for this course")
+        
+    session = db.query(schemas.Session).filter(
+        schemas.Session.course_id == data.course_id,
+        schemas.Session.session_number == data.session_number
+    ).first()
+    
+    if not session:
+        session = schemas.Session(
+            course_id=data.course_id,
+            room_id=data.room_id,
+            week_number=data.week_number,
+            session_number=data.session_number,
+        )
+        db.add(session)
+        
+    session.actual_start_time = datetime.now()
+    session.room_id = data.room_id
+    session.status = "conducted"
+    
     db.commit()
-    db.refresh(new_session)
+    db.refresh(session)
     
     # Pre-create attendance records so the UI shows the student list immediately
     enrolled_students = db.query(schemas.Enrollment).filter(schemas.Enrollment.course_id == data.course_id).all()
     for enrollment in enrolled_students:
-        record = schemas.AttendanceRecord(
-            session_id=new_session.id,
-            student_id=enrollment.student_id,
-            hit_1_present=None,
-            hit_2_present=None,
-            final_status=schemas.AttendanceStatus.ABSENT
-        )
-        db.add(record)
+        existing_record = db.query(schemas.AttendanceRecord).filter(
+            schemas.AttendanceRecord.session_id == session.id,
+            schemas.AttendanceRecord.student_id == enrollment.student_id
+        ).first()
+        if not existing_record:
+            record = schemas.AttendanceRecord(
+                session_id=session.id,
+                student_id=enrollment.student_id,
+                hit_1_present=None,
+                hit_2_present=None,
+                final_status=schemas.AttendanceStatus.ABSENT
+            )
+            db.add(record)
     db.commit()
 
     # Schedule hits in background
-    background_tasks.add_task(attendance_service.schedule_hits, new_session.id)
+    background_tasks.add_task(attendance_service.schedule_hits, session.id)
     
-    return {"status": "success", "session_id": new_session.id, "message": "Attendance session started and hits scheduled."}
+    return {"status": "success", "session_id": session.id, "message": "Attendance session started and hits scheduled."}
 
 @router.get("/sessions/{session_id}/results")
 def get_session_results(

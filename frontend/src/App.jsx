@@ -9,6 +9,9 @@ import AcademicEnrollment from './pages/admin/AcademicEnrollment';
 import CourseList from './pages/faculty/CourseList';
 import AttendanceSession from './pages/faculty/AttendanceSession';
 import Reports from './pages/faculty/Reports';
+import BulkUpload from './pages/admin/BulkUpload';
+import HodDashboard from './pages/HodDashboard';
+import DeanDashboard from './pages/DeanDashboard';
 
 const ProtectedRoute = ({ children, role }) => {
   const { user, loading } = useAuth();
@@ -48,6 +51,25 @@ const Layout = ({ children }) => {
               </NavLink>
               <NavLink to="/admin/courses" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>
                 <span>Course Management</span>
+              </NavLink>
+              <NavLink to="/admin/bulk-upload" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>
+                <span>Bulk Upload</span>
+              </NavLink>
+            </>
+          )}
+
+          {user.role === 'HOD' && (
+            <>
+              <NavLink to="/hod/dashboard" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>
+                <span>HOD Dashboard</span>
+              </NavLink>
+            </>
+          )}
+
+          {user.role === 'DEAN' && (
+            <>
+              <NavLink to="/dean/dashboard" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>
+                <span>Dean Dashboard</span>
               </NavLink>
             </>
           )}
@@ -131,6 +153,21 @@ function App() {
           } />
           <Route path="/faculty/reports" element={
             <ProtectedRoute role="FACULTY"><Layout><Reports /></Layout></ProtectedRoute>
+          } />
+
+          {/* Admin extra routes */}
+          <Route path="/admin/bulk-upload" element={
+            <ProtectedRoute role="ADMIN"><Layout><BulkUpload /></Layout></ProtectedRoute>
+          } />
+
+          {/* HOD Routes */}
+          <Route path="/hod/dashboard" element={
+            <ProtectedRoute role="HOD"><Layout><HodDashboard /></Layout></ProtectedRoute>
+          } />
+
+          {/* DEAN Routes */}
+          <Route path="/dean/dashboard" element={
+            <ProtectedRoute role="DEAN"><Layout><DeanDashboard /></Layout></ProtectedRoute>
           } />
 
           {/* Fallback */}

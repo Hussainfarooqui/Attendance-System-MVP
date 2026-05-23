@@ -7,7 +7,7 @@ const CourseManagement = () => {
   const [showCreate, setShowCreate] = useState(false);
   const [showAssign, setShowAssign] = useState(null); // holds course being assigned
   const [selectedFacultyId, setSelectedFacultyId] = useState('');
-  const [newCourse, setNewCourse] = useState({ name: '', code: '', faculty_id: '' });
+  const [newCourse, setNewCourse] = useState({ name: '', code: '', faculty_id: '', semester: '', department: '', section: '', course_type: '3hr' });
   const [msg, setMsg] = useState('');
 
   useEffect(() => { fetchAll(); }, []);
@@ -33,11 +33,15 @@ const CourseManagement = () => {
       await axios.post('/api/admin/courses', {
         name: newCourse.name,
         code: newCourse.code,
+        semester: newCourse.semester,
+        department: newCourse.department,
+        section: newCourse.section,
+        course_type: newCourse.course_type,
         faculty_id: newCourse.faculty_id ? parseInt(newCourse.faculty_id) : null,
       });
       flash('Course created successfully!');
       setShowCreate(false);
-      setNewCourse({ name: '', code: '', faculty_id: '' });
+      setNewCourse({ name: '', code: '', faculty_id: '', semester: '', department: '', section: '', course_type: '3hr' });
       fetchAll();
     } catch (err) {
       flash(err.response?.data?.detail || 'Failed to create course');
@@ -97,6 +101,8 @@ const CourseManagement = () => {
               <th>#</th>
               <th>Code</th>
               <th>Course Name</th>
+              <th>Sem/Dept/Sec</th>
+              <th>Type</th>
               <th>Assigned Faculty</th>
               <th>Actions</th>
             </tr>
@@ -110,6 +116,8 @@ const CourseManagement = () => {
                 <td>{c.id}</td>
                 <td><code style={{ background: '#f0f4ff', padding: '2px 6px', borderRadius: 4 }}>{c.code}</code></td>
                 <td><strong>{c.name}</strong></td>
+                <td>{c.semester} / {c.department} / {c.section}</td>
+                <td>{c.course_type}</td>
                 <td>
                   <span style={{
                     padding: '4px 10px', borderRadius: 12,
@@ -167,6 +175,29 @@ const CourseManagement = () => {
                 onChange={e => setNewCourse({ ...newCourse, code: e.target.value })}
                 required
               />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={labelStyle}>Semester</label>
+                  <input className="input-field" placeholder="e.g. Spring 26" style={{ marginBottom: 14 }} value={newCourse.semester} onChange={e => setNewCourse({ ...newCourse, semester: e.target.value })} required />
+                </div>
+                <div>
+                  <label style={labelStyle}>Department</label>
+                  <input className="input-field" placeholder="e.g. CS" style={{ marginBottom: 14 }} value={newCourse.department} onChange={e => setNewCourse({ ...newCourse, department: e.target.value })} required />
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={labelStyle}>Section</label>
+                  <input className="input-field" placeholder="e.g. A" style={{ marginBottom: 14 }} value={newCourse.section} onChange={e => setNewCourse({ ...newCourse, section: e.target.value })} required />
+                </div>
+                <div>
+                  <label style={labelStyle}>Course Type</label>
+                  <select className="input-field" style={{ marginBottom: 14 }} value={newCourse.course_type} onChange={e => setNewCourse({ ...newCourse, course_type: e.target.value })}>
+                    <option value="3hr">3-Hour</option>
+                    <option value="1.5hr">1.5-Hour</option>
+                  </select>
+                </div>
+              </div>
               <label style={labelStyle}>Assign Faculty (optional)</label>
               <select className="input-field" value={newCourse.faculty_id}
                 style={{ marginBottom: 14 }}

@@ -160,6 +160,10 @@ class CourseCreate(BaseModel):
     name: str
     code: str
     faculty_id: int = None
+    semester: str
+    department: str
+    section: str
+    course_type: str = "3hr"
 
 @router.get("/courses")
 def get_courses(db: Session = Depends(database.get_db), admin: schemas.User = Depends(auth_service.check_admin)):
@@ -171,6 +175,10 @@ def get_courses(db: Session = Depends(database.get_db), admin: schemas.User = De
             "id": c.id,
             "code": c.code,
             "name": c.name,
+            "semester": c.semester,
+            "department": c.department,
+            "section": c.section,
+            "course_type": c.course_type,
             "faculty_id": c.faculty_id,
             "faculty_name": faculty.full_name if faculty else "Unassigned",
         })
@@ -178,11 +186,45 @@ def get_courses(db: Session = Depends(database.get_db), admin: schemas.User = De
 
 @router.post("/courses")
 def create_course(course: CourseCreate, db: Session = Depends(database.get_db), admin: schemas.User = Depends(auth_service.check_admin)):
-    existing = db.query(schemas.Course).filter(schemas.Course.code == course.code).first()
+    dept = db.query(schemas.Department).filter(schemas.Department.code == course.department).first()
+    if not dept:
+        dept = schemas.Department(code=course.department, name=course.department)
+        db.add(dept)
+        db.flush()
+        
+    existing = db.query(schemas.Course).filter(
+        schemas.Course.code == course.code,
+        schemas.Course.semester == course.semester,
+        schemas.Course.section == course.section
+    ).first()
     if existing:
-        raise HTTPException(status_code=400, detail="Course code already exists")
-    new_course = schemas.Course(name=course.name, code=course.code, faculty_id=course.faculty_id)
+        raise HTTPException(status_code=400, detail="Course with same code, semester, and section already exists")
+        
+    new_course = schemas.Course(
+        name=course.name, 
+        code=course.code, 
+        faculty_id=course.faculty_id,
+        semester=course.semester,
+        department=course.department,
+        section=course.section,
+        course_type=course.course_type,
+        total_weeks=16
+    )
     db.add(new_course)
+    db.flush()
+    
+    # Generate 32 sessions
+    for i in range(1, 33):
+        week = ((i - 1) // 2) + 1
+        session = schemas.Session(
+            course_id=new_course.id,
+            week_number=week,
+            session_number=i,
+            session_type="lecture",
+            status="scheduled"
+        )
+        db.add(session)
+        
     db.commit()
     db.refresh(new_course)
     return new_course

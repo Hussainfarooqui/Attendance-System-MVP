@@ -9,3 +9,5 @@ python-multipart
 python-dotenv
 opencv-python
 fpdf2
+pandas
+openpyxl

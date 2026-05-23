@@ -10,7 +10,7 @@ env_path = os.path.join(os.path.dirname(__file__), ".env")
 load_dotenv(dotenv_path=env_path)
 
 from .models import schemas, database
-from .routes import auth, admin, faculty
+from .routes import auth, admin, faculty, bulk_upload
 import uvicorn
 
 # Create tables on startup (Simple approach for MVP, can use Alembic later)
@@ -31,6 +31,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(admin.router)
 app.include_router(faculty.router)
+app.include_router(bulk_upload.router)
 
 @app.get("/health")
 def health_check():
