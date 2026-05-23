@@ -116,6 +116,8 @@ const UserManagement = () => {
               >
                 <option value="FACULTY">Faculty Member</option>
                 <option value="ADMIN">System Administrator</option>
+                <option value="HOD">Head of Department (HOD)</option>
+                <option value="DEAN">Dean</option>
               </select>
               
               <div style={{ display: 'flex', gap: '10px' }}>
