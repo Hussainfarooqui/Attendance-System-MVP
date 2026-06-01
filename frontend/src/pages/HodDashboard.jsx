@@ -37,7 +37,10 @@ function HodDashboard() {
 
   return (
     <div className="page-container" style={{ padding: '40px' }}>
-      <h2 style={{ marginBottom: '24px' }}>HOD Dashboard - Department Overview</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <h2 style={{ margin: 0 }}>HOD Dashboard - Department Overview</h2>
+        <button className="btn btn-gold" onClick={() => window.print()}>Export Department Report (PDF)</button>
+      </div>
       
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', marginBottom: '32px' }}>
         <div className="glass-card">
@@ -57,7 +60,7 @@ function HodDashboard() {
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
         <div className="glass-card">
           <h3 style={{ marginBottom: '16px' }}>Department Courses</h3>
-          <table className="data-table">
+          <table className="table-container">
             <thead>
               <tr>
                 <th>Code</th>

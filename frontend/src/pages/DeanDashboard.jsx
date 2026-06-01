@@ -22,7 +22,7 @@ function DeanDashboard() {
     <div className="page-container" style={{ padding: '40px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <h2>Dean Dashboard - University Overview</h2>
-        <button className="btn btn-gold">Export University Report (PDF)</button>
+        <button className="btn btn-gold" onClick={() => window.print()}>Export University Report (PDF)</button>
       </div>
       
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', marginBottom: '32px' }}>
@@ -42,7 +42,7 @@ function DeanDashboard() {
 
       <div className="glass-card">
         <h3 style={{ marginBottom: '16px' }}>Department Breakdown</h3>
-        <table className="data-table">
+        <table className="table-container">
           <thead>
             <tr>
               <th>Department</th>

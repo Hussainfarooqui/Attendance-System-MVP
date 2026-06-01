@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 
 const Reports = () => {
   const [courses, setCourses] = useState([]);
@@ -19,7 +19,7 @@ const Reports = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get('/api/faculty/courses');
+      const response = await api.get('/api/faculty/courses');
       setCourses(response.data);
     } catch (err) {
       console.error("Failed to fetch courses");
@@ -29,7 +29,7 @@ const Reports = () => {
   const fetchReport = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`/api/faculty/courses/${selectedCourse}/cumulative`);
+      const response = await api.get(`/api/faculty/courses/${selectedCourse}/cumulative`);
       setReportData(response.data);
     } catch (err) {
       console.error("Failed to fetch report data");
@@ -68,7 +68,7 @@ const Reports = () => {
   const handleExportPDF = async () => {
     if (!selectedCourse) return;
     try {
-      const response = await axios.get(`/api/faculty/courses/${selectedCourse}/export-pdf`, {
+      const response = await api.get(`/api/faculty/courses/${selectedCourse}/export-pdf`, {
         responseType: 'blob'
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));
