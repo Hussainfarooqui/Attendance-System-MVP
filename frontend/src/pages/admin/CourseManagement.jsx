@@ -7,7 +7,7 @@ const CourseManagement = () => {
   const [showCreate, setShowCreate] = useState(false);
   const [showAssign, setShowAssign] = useState(null); // holds course being assigned
   const [selectedFacultyId, setSelectedFacultyId] = useState('');
-  const [newCourse, setNewCourse] = useState({ name: '', code: '', faculty_id: '', semester: '', department: '', section: '', course_type: '3hr' });
+  const [newCourse, setNewCourse] = useState({ name: '', code: '', faculty_id: '', semester: '', department: '', slot: '', course_type: '3hr' });
   const [msg, setMsg] = useState('');
 
   useEffect(() => { fetchAll(); }, []);
@@ -35,13 +35,13 @@ const CourseManagement = () => {
         code: newCourse.code,
         semester: newCourse.semester,
         department: newCourse.department,
-        section: newCourse.section,
+        slot: newCourse.slot,
         course_type: newCourse.course_type,
         faculty_id: newCourse.faculty_id ? parseInt(newCourse.faculty_id) : null,
       });
       flash('Course created successfully!');
       setShowCreate(false);
-      setNewCourse({ name: '', code: '', faculty_id: '', semester: '', department: '', section: '', course_type: '3hr' });
+      setNewCourse({ name: '', code: '', faculty_id: '', semester: '', department: '', slot: '', course_type: '3hr' });
       fetchAll();
     } catch (err) {
       flash(err.response?.data?.detail || 'Failed to create course');
@@ -116,7 +116,7 @@ const CourseManagement = () => {
                 <td>{c.id}</td>
                 <td><code style={{ background: '#f0f4ff', padding: '2px 6px', borderRadius: 4 }}>{c.code}</code></td>
                 <td><strong>{c.name}</strong></td>
-                <td>{c.semester} / {c.department} / {c.section}</td>
+                <td>{c.semester} / {c.department} / {c.slot}</td>
                 <td>{c.course_type}</td>
                 <td>
                   <span style={{
@@ -187,8 +187,8 @@ const CourseManagement = () => {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={labelStyle}>Section</label>
-                  <input className="input-field" placeholder="e.g. A" style={{ marginBottom: 14 }} value={newCourse.section} onChange={e => setNewCourse({ ...newCourse, section: e.target.value })} required />
+                  <label style={labelStyle}>Slot (Day & Timing)</label>
+                  <input className="input-field" placeholder="e.g. Mon 10:00 AM - 11:30 AM" style={{ marginBottom: 14 }} value={newCourse.slot} onChange={e => setNewCourse({ ...newCourse, slot: e.target.value })} required />
                 </div>
                 <div>
                   <label style={labelStyle}>Course Type</label>

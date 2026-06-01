@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api';
 import { useNavigate } from 'react-router-dom';
 
 const CourseList = () => {
@@ -12,7 +12,7 @@ const CourseList = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get('/api/faculty/courses');
+      const response = await api.get('/api/faculty/courses');
       setCourses(response.data);
     } catch (err) {
       console.error("Failed to fetch courses");
@@ -21,7 +21,7 @@ const CourseList = () => {
 
   const handleStartAttendance = async (courseId) => {
     try {
-      const response = await axios.post('/api/faculty/sessions/start', {
+      const response = await api.post('/api/faculty/sessions/start', {
         course_id: courseId,
         room_id: 1, // Mock room for MVP
         week_number: 1,
@@ -52,7 +52,7 @@ const CourseList = () => {
               <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px', fontWeight: 600 }}>{course.code}</p>
               
               <div style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
-                <span className="badge" style={{ background: '#F1F5F9', color: '#475569' }}>Section A</span>
+                <span className="badge" style={{ background: '#F1F5F9', color: '#475569' }}>Slot: {course.slot}</span>
                 <span className="badge" style={{ background: '#F1F5F9', color: '#475569' }}>Week 14</span>
               </div>
             </div>

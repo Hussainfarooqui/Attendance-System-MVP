@@ -17,7 +17,7 @@ async def bulk_upload_courses(file: UploadFile = File(...), db: Session = Depend
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error reading Excel file: {str(e)}")
         
-    expected_columns = ['course_code', 'course_name', 'credit_hours', 'type', 'department', 'semester', 'section', 'course_category']
+    expected_columns = ['course_code', 'course_name', 'credit_hours', 'type', 'department', 'semester', 'slot', 'course_category']
     missing_cols = [col for col in expected_columns if col not in df.columns]
     if missing_cols:
         raise HTTPException(status_code=400, detail=f"Missing columns: {', '.join(missing_cols)}")
@@ -32,10 +32,10 @@ async def bulk_upload_courses(file: UploadFile = File(...), db: Session = Depend
             name = str(row['course_name']).strip()
             semester = str(row['semester']).strip()
             department = str(row['department']).strip()
-            section = str(row['section']).strip()
+            slot = str(row['slot']).strip()
             c_type = str(row['type']).strip()
             
-            if pd.isna(row['course_code']) or not all([code, name, semester, department, section, c_type]):
+            if pd.isna(row['course_code']) or not all([code, name, semester, department, slot, c_type]):
                 errors.append({"row": index + 2, "error": "Missing required fields"})
                 continue
                 
@@ -51,14 +51,14 @@ async def bulk_upload_courses(file: UploadFile = File(...), db: Session = Depend
                 db.add(dept)
                 db.flush()
                 
-            # Check for duplicate course sections
+            # Check for duplicate course slots
             existing = db.query(schemas.Course).filter(
                 schemas.Course.code == code,
                 schemas.Course.semester == semester,
-                schemas.Course.section == section
+                schemas.Course.slot == slot
             ).first()
             if existing:
-                errors.append({"row": index + 2, "error": "Course with same code, semester and section already exists"})
+                errors.append({"row": index + 2, "error": "Course with same code, semester and slot already exists"})
                 continue
                 
             new_course = schemas.Course(
@@ -66,7 +66,7 @@ async def bulk_upload_courses(file: UploadFile = File(...), db: Session = Depend
                 name=name,
                 semester=semester,
                 department=department,
-                section=section,
+                slot=slot,
                 course_type=c_type,
                 total_weeks=16
             )

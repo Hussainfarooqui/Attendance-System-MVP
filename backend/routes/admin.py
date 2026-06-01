@@ -162,7 +162,7 @@ class CourseCreate(BaseModel):
     faculty_id: int = None
     semester: str
     department: str
-    section: str
+    slot: str
     course_type: str = "3hr"
 
 @router.get("/courses")
@@ -177,7 +177,7 @@ def get_courses(db: Session = Depends(database.get_db), admin: schemas.User = De
             "name": c.name,
             "semester": c.semester,
             "department": c.department,
-            "section": c.section,
+            "slot": c.slot,
             "course_type": c.course_type,
             "faculty_id": c.faculty_id,
             "faculty_name": faculty.full_name if faculty else "Unassigned",
@@ -195,10 +195,10 @@ def create_course(course: CourseCreate, db: Session = Depends(database.get_db), 
     existing = db.query(schemas.Course).filter(
         schemas.Course.code == course.code,
         schemas.Course.semester == course.semester,
-        schemas.Course.section == course.section
+        schemas.Course.slot == course.slot
     ).first()
     if existing:
-        raise HTTPException(status_code=400, detail="Course with same code, semester, and section already exists")
+        raise HTTPException(status_code=400, detail="Course with same code, semester, and slot already exists")
         
     new_course = schemas.Course(
         name=course.name, 
@@ -206,7 +206,7 @@ def create_course(course: CourseCreate, db: Session = Depends(database.get_db), 
         faculty_id=course.faculty_id,
         semester=course.semester,
         department=course.department,
-        section=course.section,
+        slot=course.slot,
         course_type=course.course_type,
         total_weeks=16
     )
