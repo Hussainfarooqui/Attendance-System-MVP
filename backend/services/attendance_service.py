@@ -51,9 +51,9 @@ def process_attendance_hit(session_id: int, hit_number: int):
             else:
                 print("DEBUG: Frame captured successfully.")
                 # Show the frame on screen for the demo
-                cv2.imshow(f"Live Monitoring - Session {session_id}", frame)
-                cv2.waitKey(5000) 
-                cv2.destroyAllWindows()
+                # cv2.imshow(f"Live Monitoring - Session {session_id}", frame)
+                # cv2.waitKey(5000) 
+                # cv2.destroyAllWindows()
         else:
             print("DEBUG: No camera_url found for this classroom.")
 
@@ -160,9 +160,9 @@ def process_attendance_hit(session_id: int, hit_number: int):
                 cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
                 cv2.putText(frame, student_label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
 
-            cv2.imshow(f"IQRA LIVE MONITORING - Session {session_id}", frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # cv2.imshow(f"IQRA LIVE MONITORING - Session {session_id}", frame)
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
         
         cap.release()
         cv2.destroyAllWindows()
