@@ -162,8 +162,10 @@ class CourseCreate(BaseModel):
     faculty_id: int = None
     semester: str
     department: str
-    slot: str
+    section: str
     course_type: str = "3hr"
+    schedule_days: str = None
+    time_slot: str = None
 
 @router.get("/courses")
 def get_courses(db: Session = Depends(database.get_db), admin: schemas.User = Depends(auth_service.check_admin)):
@@ -177,8 +179,10 @@ def get_courses(db: Session = Depends(database.get_db), admin: schemas.User = De
             "name": c.name,
             "semester": c.semester,
             "department": c.department,
-            "slot": c.slot,
+            "section": c.section,
             "course_type": c.course_type,
+            "schedule_days": c.schedule_days,
+            "time_slot": c.time_slot,
             "faculty_id": c.faculty_id,
             "faculty_name": faculty.full_name if faculty else "Unassigned",
         })
@@ -195,10 +199,10 @@ def create_course(course: CourseCreate, db: Session = Depends(database.get_db), 
     existing = db.query(schemas.Course).filter(
         schemas.Course.code == course.code,
         schemas.Course.semester == course.semester,
-        schemas.Course.slot == course.slot
+        schemas.Course.section == course.section
     ).first()
     if existing:
-        raise HTTPException(status_code=400, detail="Course with same code, semester, and slot already exists")
+        raise HTTPException(status_code=400, detail="Course with same code, semester, and section already exists")
         
     new_course = schemas.Course(
         name=course.name, 
@@ -206,16 +210,21 @@ def create_course(course: CourseCreate, db: Session = Depends(database.get_db), 
         faculty_id=course.faculty_id,
         semester=course.semester,
         department=course.department,
-        slot=course.slot,
+        section=course.section,
         course_type=course.course_type,
+        schedule_days=course.schedule_days,
+        time_slot=course.time_slot,
         total_weeks=16
     )
     db.add(new_course)
     db.flush()
     
-    # Generate 32 sessions
-    for i in range(1, 33):
-        week = ((i - 1) // 2) + 1
+    # Generate sessions based on course type
+    total_sessions = 32 if course.course_type == "1.5hr" else 16
+    
+    for i in range(1, total_sessions + 1):
+        # If 32 sessions (2/week), week is ((i-1)//2)+1. If 16 sessions (1/week), week is i.
+        week = ((i - 1) // 2) + 1 if total_sessions == 32 else i
         session = schemas.Session(
             course_id=new_course.id,
             week_number=week,

@@ -7,7 +7,7 @@ const CourseManagement = () => {
   const [showCreate, setShowCreate] = useState(false);
   const [showAssign, setShowAssign] = useState(null); // holds course being assigned
   const [selectedFacultyId, setSelectedFacultyId] = useState('');
-  const [newCourse, setNewCourse] = useState({ name: '', code: '', faculty_id: '', semester: '', department: '', slot: '', course_type: '3hr' });
+  const [newCourse, setNewCourse] = useState({ name: '', code: '', faculty_id: '', semester: '', department: '', section: '', course_type: '3hr', schedule_days: '', time_slot: '' });
   const [msg, setMsg] = useState('');
 
   useEffect(() => { fetchAll(); }, []);
@@ -35,13 +35,15 @@ const CourseManagement = () => {
         code: newCourse.code,
         semester: newCourse.semester,
         department: newCourse.department,
-        slot: newCourse.slot,
+        section: newCourse.section,
         course_type: newCourse.course_type,
+        schedule_days: newCourse.schedule_days,
+        time_slot: newCourse.time_slot,
         faculty_id: newCourse.faculty_id ? parseInt(newCourse.faculty_id) : null,
       });
       flash('Course created successfully!');
       setShowCreate(false);
-      setNewCourse({ name: '', code: '', faculty_id: '', semester: '', department: '', slot: '', course_type: '3hr' });
+      setNewCourse({ name: '', code: '', faculty_id: '', semester: '', department: '', section: '', course_type: '3hr', schedule_days: '', time_slot: '' });
       fetchAll();
     } catch (err) {
       flash(err.response?.data?.detail || 'Failed to create course');
@@ -102,6 +104,7 @@ const CourseManagement = () => {
               <th>Code</th>
               <th>Course Name</th>
               <th>Sem/Dept/Sec</th>
+              <th>Schedule</th>
               <th>Type</th>
               <th>Assigned Faculty</th>
               <th>Actions</th>
@@ -116,7 +119,17 @@ const CourseManagement = () => {
                 <td>{c.id}</td>
                 <td><code style={{ background: '#f0f4ff', padding: '2px 6px', borderRadius: 4 }}>{c.code}</code></td>
                 <td><strong>{c.name}</strong></td>
-                <td>{c.semester} / {c.department} / {c.slot}</td>
+                <td>{c.semester} / {c.department} / {c.section}</td>
+                <td>
+                  {c.schedule_days && c.time_slot ? (
+                    <div style={{ fontSize: '12px' }}>
+                      <div style={{ fontWeight: 600 }}>{c.schedule_days}</div>
+                      <div style={{ color: '#666' }}>{c.time_slot}</div>
+                    </div>
+                  ) : (
+                    <span style={{ color: '#aaa', fontSize: '12px' }}>Not set</span>
+                  )}
+                </td>
                 <td>{c.course_type}</td>
                 <td>
                   <span style={{
@@ -187,14 +200,48 @@ const CourseManagement = () => {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={labelStyle}>Slot (Day & Timing)</label>
-                  <input className="input-field" placeholder="e.g. Mon 10:00 AM - 11:30 AM" style={{ marginBottom: 14 }} value={newCourse.slot} onChange={e => setNewCourse({ ...newCourse, slot: e.target.value })} required />
+                  <label style={labelStyle}>Section</label>
+                  <input className="input-field" placeholder="e.g. A" style={{ marginBottom: 14 }} value={newCourse.section} onChange={e => setNewCourse({ ...newCourse, section: e.target.value })} required />
                 </div>
                 <div>
                   <label style={labelStyle}>Course Type</label>
-                  <select className="input-field" style={{ marginBottom: 14 }} value={newCourse.course_type} onChange={e => setNewCourse({ ...newCourse, course_type: e.target.value })}>
+                  <select className="input-field" style={{ marginBottom: 14 }} value={newCourse.course_type} onChange={e => setNewCourse({ ...newCourse, course_type: e.target.value, schedule_days: '' })}>
                     <option value="3hr">3-Hour</option>
                     <option value="1.5hr">1.5-Hour</option>
+                  </select>
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={labelStyle}>Schedule Days</label>
+                  <select className="input-field" style={{ marginBottom: 14 }} value={newCourse.schedule_days} onChange={e => setNewCourse({ ...newCourse, schedule_days: e.target.value })} required>
+                    <option value="">— Select Days —</option>
+                    {newCourse.course_type === '1.5hr' ? (
+                      <>
+                        <option value="MON/WED">MON / WED</option>
+                        <option value="TUE/THU">TUE / THU</option>
+                      </>
+                    ) : (
+                      <>
+                        <option value="MON">Monday</option>
+                        <option value="TUE">Tuesday</option>
+                        <option value="WED">Wednesday</option>
+                        <option value="THU">Thursday</option>
+                        <option value="FRI">Friday</option>
+                        <option value="SAT">Saturday</option>
+                      </>
+                    )}
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>Time Slot</label>
+                  <select className="input-field" style={{ marginBottom: 14 }} value={newCourse.time_slot} onChange={e => setNewCourse({ ...newCourse, time_slot: e.target.value })} required>
+                    <option value="">— Select Time —</option>
+                    <option value="08:30-11:20">08:30 - 11:20</option>
+                    <option value="11:35-14:20">11:35 - 14:20</option>
+                    <option value="13:00-14:20">13:00 - 14:20</option>
+                    <option value="14:30-15:50">14:30 - 15:50</option>
+                    <option value="16:00-17:20">16:00 - 17:20</option>
                   </select>
                 </div>
               </div>
