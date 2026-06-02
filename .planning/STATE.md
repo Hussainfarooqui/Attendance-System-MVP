@@ -11,8 +11,7 @@
 - **Infrastructure**: Starting with FastAPI + PostgreSQL.
 
 ## Next Actions
-1. Final system audit.
-2. Handover to user.
+1. Handover to user.
 
 ## Active Decisions
 - Using **React** for frontend to handle complex dashboard states (admin vs faculty).

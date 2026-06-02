@@ -65,7 +65,7 @@ def create_student(student: StudentCreate, db: Session = Depends(database.get_db
         id=student.id,
         full_name=student.full_name,
         image_path=student.image_path,
-        face_embedding=student.face_embedding
+        face_embedding=json.dumps(student.face_embedding) if student.face_embedding else None
     )
     db.add(new_student)
     db.commit()
@@ -162,7 +162,6 @@ class CourseCreate(BaseModel):
     faculty_id: int = None
     semester: str
     department: str
-    section: str
     course_type: str = "3hr"
     schedule_days: str = None
     time_slot: str = None
@@ -179,7 +178,6 @@ def get_courses(db: Session = Depends(database.get_db), admin: schemas.User = De
             "name": c.name,
             "semester": c.semester,
             "department": c.department,
-            "section": c.section,
             "course_type": c.course_type,
             "schedule_days": c.schedule_days,
             "time_slot": c.time_slot,
@@ -198,11 +196,10 @@ def create_course(course: CourseCreate, db: Session = Depends(database.get_db), 
         
     existing = db.query(schemas.Course).filter(
         schemas.Course.code == course.code,
-        schemas.Course.semester == course.semester,
-        schemas.Course.section == course.section
+        schemas.Course.semester == course.semester
     ).first()
     if existing:
-        raise HTTPException(status_code=400, detail="Course with same code, semester, and section already exists")
+        raise HTTPException(status_code=400, detail="Course with same code and semester already exists")
         
     new_course = schemas.Course(
         name=course.name, 
@@ -210,7 +207,6 @@ def create_course(course: CourseCreate, db: Session = Depends(database.get_db), 
         faculty_id=course.faculty_id,
         semester=course.semester,
         department=course.department,
-        section=course.section,
         course_type=course.course_type,
         schedule_days=course.schedule_days,
         time_slot=course.time_slot,

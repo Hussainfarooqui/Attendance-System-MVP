@@ -7,7 +7,7 @@ const CourseManagement = () => {
   const [showCreate, setShowCreate] = useState(false);
   const [showAssign, setShowAssign] = useState(null); // holds course being assigned
   const [selectedFacultyId, setSelectedFacultyId] = useState('');
-  const [newCourse, setNewCourse] = useState({ name: '', code: '', faculty_id: '', semester: '', department: '', section: '', course_type: '3hr', schedule_days: '', time_slot: '' });
+  const [newCourse, setNewCourse] = useState({ name: '', code: '', faculty_id: '', semester: '', department: '', course_type: '3hr', schedule_days: '', time_slot: '' });
   const [msg, setMsg] = useState('');
 
   useEffect(() => { fetchAll(); }, []);
@@ -35,7 +35,6 @@ const CourseManagement = () => {
         code: newCourse.code,
         semester: newCourse.semester,
         department: newCourse.department,
-        section: newCourse.section,
         course_type: newCourse.course_type,
         schedule_days: newCourse.schedule_days,
         time_slot: newCourse.time_slot,
@@ -43,10 +42,14 @@ const CourseManagement = () => {
       });
       flash('Course created successfully!');
       setShowCreate(false);
-      setNewCourse({ name: '', code: '', faculty_id: '', semester: '', department: '', section: '', course_type: '3hr', schedule_days: '', time_slot: '' });
+      setNewCourse({ name: '', code: '', faculty_id: '', semester: '', department: '', course_type: '3hr', schedule_days: '', time_slot: '' });
       fetchAll();
     } catch (err) {
-      flash(err.response?.data?.detail || 'Failed to create course');
+      let errMsg = 'Failed to create course';
+      if (err.response?.data?.detail) {
+        errMsg = typeof err.response.data.detail === 'string' ? err.response.data.detail : JSON.stringify(err.response.data.detail);
+      }
+      flash(errMsg);
     }
   };
 
@@ -62,7 +65,11 @@ const CourseManagement = () => {
       setSelectedFacultyId('');
       fetchAll();
     } catch (err) {
-      flash(err.response?.data?.detail || 'Assignment failed');
+      let errMsg = 'Assignment failed';
+      if (err.response?.data?.detail) {
+        errMsg = typeof err.response.data.detail === 'string' ? err.response.data.detail : JSON.stringify(err.response.data.detail);
+      }
+      flash(errMsg);
     }
   };
 
@@ -73,7 +80,11 @@ const CourseManagement = () => {
       flash('Course deleted successfully!');
       fetchAll();
     } catch (err) {
-      flash(err.response?.data?.detail || 'Failed to delete course');
+      let errMsg = 'Failed to delete course';
+      if (err.response?.data?.detail) {
+        errMsg = typeof err.response.data.detail === 'string' ? err.response.data.detail : JSON.stringify(err.response.data.detail);
+      }
+      flash(errMsg);
     }
   };
 
@@ -89,10 +100,10 @@ const CourseManagement = () => {
 
       {msg && (
         <div style={{ marginTop: 16, padding: '10px 16px', borderRadius: 8,
-          background: msg.includes('fail') || msg.includes('Failed') ? '#ffebee' : '#e8f5e9',
-          color:      msg.includes('fail') || msg.includes('Failed') ? '#c62828' : '#2e7d32',
+          background: String(msg).toLowerCase().includes('fail') ? '#ffebee' : '#e8f5e9',
+          color:      String(msg).toLowerCase().includes('fail') ? '#c62828' : '#2e7d32',
           fontWeight: 600 }}>
-          {msg}
+          {String(msg)}
         </div>
       )}
 
@@ -103,7 +114,7 @@ const CourseManagement = () => {
               <th>#</th>
               <th>Code</th>
               <th>Course Name</th>
-              <th>Sem/Dept/Sec</th>
+              <th>Sem/Dept</th>
               <th>Schedule</th>
               <th>Type</th>
               <th>Assigned Faculty</th>
@@ -119,7 +130,7 @@ const CourseManagement = () => {
                 <td>{c.id}</td>
                 <td><code style={{ background: '#f0f4ff', padding: '2px 6px', borderRadius: 4 }}>{c.code}</code></td>
                 <td><strong>{c.name}</strong></td>
-                <td>{c.semester} / {c.department} / {c.section}</td>
+                <td>{c.semester} / {c.department}</td>
                 <td>
                   {c.schedule_days && c.time_slot ? (
                     <div style={{ fontSize: '12px' }}>
@@ -200,14 +211,19 @@ const CourseManagement = () => {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={labelStyle}>Section</label>
-                  <input className="input-field" placeholder="e.g. A" style={{ marginBottom: 14 }} value={newCourse.section} onChange={e => setNewCourse({ ...newCourse, section: e.target.value })} required />
-                </div>
-                <div>
                   <label style={labelStyle}>Course Type</label>
-                  <select className="input-field" style={{ marginBottom: 14 }} value={newCourse.course_type} onChange={e => setNewCourse({ ...newCourse, course_type: e.target.value, schedule_days: '' })}>
+                  <select className="input-field" style={{ marginBottom: 14 }} value={newCourse.course_type} onChange={e => setNewCourse({ ...newCourse, course_type: e.target.value, schedule_days: '', time_slot: '' })}>
                     <option value="3hr">3-Hour</option>
                     <option value="1.5hr">1.5-Hour</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>Assign Faculty (optional)</label>
+                  <select className="input-field" value={newCourse.faculty_id}
+                    style={{ marginBottom: 14 }}
+                    onChange={e => setNewCourse({ ...newCourse, faculty_id: e.target.value })}>
+                    <option value="">— Assign later —</option>
+                    {faculty.map(f => <option key={f.id} value={f.id}>{f.full_name} ({f.email})</option>)}
                   </select>
                 </div>
               </div>
@@ -237,22 +253,25 @@ const CourseManagement = () => {
                   <label style={labelStyle}>Time Slot</label>
                   <select className="input-field" style={{ marginBottom: 14 }} value={newCourse.time_slot} onChange={e => setNewCourse({ ...newCourse, time_slot: e.target.value })} required>
                     <option value="">— Select Time —</option>
-                    <option value="08:30-11:20">08:30 - 11:20</option>
-                    <option value="11:35-14:20">11:35 - 14:20</option>
-                    <option value="13:00-14:20">13:00 - 14:20</option>
-                    <option value="14:30-15:50">14:30 - 15:50</option>
-                    <option value="16:00-17:20">16:00 - 17:20</option>
+                    {newCourse.course_type === '3hr' ? (
+                      <>
+                        <option value="08:30-11:20">08:30 - 11:20</option>
+                        <option value="11:35-14:20">11:35 - 14:20</option>
+                        <option value="14:30-17:20">14:30 - 17:20</option>
+                      </>
+                    ) : (
+                      <>
+                        <option value="08:30-09:40">08:30 - 09:40</option>
+                        <option value="10:00-11:10">10:00 - 11:10</option>
+                        <option value="11:35-12:45">11:35 - 12:45</option>
+                        <option value="13:00-14:10">13:00 - 14:10</option>
+                        <option value="14:30-15:40">14:30 - 15:40</option>
+                        <option value="16:00-17:10">16:00 - 17:10</option>
+                      </>
+                    )}
                   </select>
                 </div>
               </div>
-              <label style={labelStyle}>Assign Faculty (optional)</label>
-              <select className="input-field" value={newCourse.faculty_id}
-                style={{ marginBottom: 14 }}
-                onChange={e => setNewCourse({ ...newCourse, faculty_id: e.target.value })}>
-                <option value="">— Assign later —</option>
-                {faculty.map(f => <option key={f.id} value={f.id}>{f.full_name} ({f.email})</option>)}
-              </select>
-
               <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
                 <button type="submit" className="btn btn-primary">Create</button>
                 <button type="button" className="btn" onClick={() => setShowCreate(false)}>Cancel</button>

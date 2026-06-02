@@ -64,7 +64,7 @@ class Course(Base):
     
     semester = Column(String(20), nullable=False)
     department = Column(String(10), ForeignKey("departments.code"), nullable=False)
-    section = Column(String(5), nullable=False)
+    slot = Column(String(5), nullable=False, default="-")
     course_type = Column(String(10), nullable=False, default="3hr")
     schedule_days = Column(String(50), nullable=True)
     time_slot = Column(String(50), nullable=True)
@@ -74,7 +74,7 @@ class Course(Base):
     dept = relationship("Department")
 
     __table_args__ = (
-        UniqueConstraint('code', 'semester', 'section', name='uix_course_sem_sec'),
+        UniqueConstraint('code', 'semester', name='uix_course_sem_sec'),
     )
 
 class Student(Base):

@@ -50,10 +50,6 @@ def process_attendance_hit(session_id: int, hit_number: int):
                 frame = None
             else:
                 print("DEBUG: Frame captured successfully.")
-                # Show the frame on screen for the demo
-                # cv2.imshow(f"Live Monitoring - Session {session_id}", frame)
-                # cv2.waitKey(5000) 
-                # cv2.destroyAllWindows()
         else:
             print("DEBUG: No camera_url found for this classroom.")
 
@@ -143,7 +139,19 @@ def process_attendance_hit(session_id: int, hit_number: int):
                     # Parse embedding if it's a string
                     try:
                         import json
-                        s_emb = json.loads(student.face_embedding) if isinstance(student.face_embedding, str) else student.face_embedding
+                        import ast
+                        s_emb = student.face_embedding
+                        if isinstance(s_emb, str):
+                            try:
+                                s_emb = json.loads(s_emb)
+                            except json.JSONDecodeError:
+                                s_emb = ast.literal_eval(s_emb)
+                            if isinstance(s_emb, str):
+                                s_emb = json.loads(s_emb)
+                                
+                        if not isinstance(s_emb, list):
+                            raise ValueError(f"Expected list, got {type(s_emb)}")
+                            
                         score = ai.compare_faces(s_emb, d_emb)
                         if score > 0.363:
                             final_matched_ids.add(student.id)
@@ -159,13 +167,8 @@ def process_attendance_hit(session_id: int, hit_number: int):
                 x, y, w, h = bbox
                 cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
                 cv2.putText(frame, student_label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
-
-            # cv2.imshow(f"IQRA LIVE MONITORING - Session {session_id}", frame)
-            # if cv2.waitKey(1) & 0xFF == ord('q'):
-            #     break
         
         cap.release()
-        cv2.destroyAllWindows()
 
         # ─── Update DB Records ───
         # Reload enrolled students to ensure fresh session

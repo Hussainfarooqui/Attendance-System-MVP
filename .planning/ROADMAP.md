@@ -42,8 +42,8 @@
     - [x] Remove PostgreSQL-specific code and Docker services.
     - [x] Add Delete endpoints for Users and Students in Backend.
     - [x] Implement Delete UI in Admin Dashboard.
-    - [/] Fix Student Enrollment persistence issues.
-    - [/] Improve UI alignment and mobile responsiveness.
+    - [x] Fix Student Enrollment persistence issues.
+    - [x] Improve UI alignment and mobile responsiveness.
 
 ## Status
 | Phase | Name | Status |
@@ -55,4 +55,4 @@
 | 5 | Admin UI | ✅ Complete |
 | 6 | Faculty UI & Reports | ✅ Complete |
 | 7 | Data Migration & Verification | ✅ Complete |
-| 8 | Cleanup, Delete Logic & UI Refinement | 🚧 In Progress |
+| 8 | Cleanup, Delete Logic & UI Refinement | ✅ Complete |
