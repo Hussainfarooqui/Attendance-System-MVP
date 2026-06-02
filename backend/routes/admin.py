@@ -159,12 +159,12 @@ def get_clusters(db: Session = Depends(database.get_db), admin: schemas.User = D
 class CourseCreate(BaseModel):
     name: str
     code: str
-    faculty_id: int = None
+    faculty_id: Optional[int] = None
     semester: str
     department: str
     course_type: str = "3hr"
-    schedule_days: str = None
-    time_slot: str = None
+    schedule_days: Optional[str] = None
+    time_slot: Optional[str] = None
 
 @router.get("/courses")
 def get_courses(db: Session = Depends(database.get_db), admin: schemas.User = Depends(auth_service.check_admin)):
