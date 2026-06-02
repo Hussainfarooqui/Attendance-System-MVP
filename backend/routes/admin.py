@@ -19,8 +19,8 @@ class UserCreate(BaseModel):
 class StudentCreate(BaseModel):
     id: str
     full_name: str
-    image_path: str = None
-    face_embedding: list = None
+    image_path: Optional[str] = None
+    face_embedding: Optional[list] = None
 
 class ClusterCreate(BaseModel):
     name: str

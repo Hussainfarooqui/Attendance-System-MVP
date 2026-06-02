@@ -1,0 +1,18 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Databases
+*.db
+*.sqlite3
+
+# Uploads and temporary logs
+backend/uploads/
+*.log
+backend_error.log
+
+# Node modules
+node_modules/
+dist/
+.env
