@@ -167,8 +167,21 @@ def process_attendance_hit(session_id: int, hit_number: int):
                 x, y, w, h = bbox
                 cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
                 cv2.putText(frame, student_label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
+            
+            # Show the live camera window
+            try:
+                cv2.imshow(f"AI Attendance Scanning - Session {session_id}", frame)
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
+            except Exception as e:
+                print(f"DEBUG: Could not render window: {e}")
         
         cap.release()
+        try:
+            cv2.destroyAllWindows()
+        except Exception:
+            pass
+
 
         # ─── Update DB Records ───
         # Reload enrolled students to ensure fresh session
