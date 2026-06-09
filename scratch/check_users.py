@@ -1,23 +1,26 @@
-
 import sys
 import os
-# Add root to sys.path to import backend modules
 sys.path.append(os.getcwd())
 
-from backend.models.database import SessionLocal
-from backend.models.schemas import User
+from backend.models import database, schemas
+from sqlalchemy.orm import Session
 
-def check_users():
-    db = SessionLocal()
+def main():
+    db = Session(database.engine)
     try:
-        users = db.query(User).all()
-        print(f"Found {len(users)} users:")
-        for user in users:
-            print(f"ID: {user.id}, Full Name: {user.full_name}, Email: {user.email}, Role: {user.role}")
+        users = db.query(schemas.User).all()
+        print(f"Total users: {len(users)}")
+        for u in users:
+            print(f"User: ID={u.id}, Email={u.email}, Role={u.role}, Name={u.full_name}")
+            
+        courses = db.query(schemas.Course).all()
+        print(f"Total courses: {len(courses)}")
+        for c in courses:
+            print(f"Course: ID={c.id}, Code={c.code}, Name={c.name}, Faculty ID={c.faculty_id}")
     except Exception as e:
         print(f"Error: {e}")
     finally:
         db.close()
 
-if __name__ == "__main__":
-    check_users()
+if __name__ == '__main__':
+    main()
