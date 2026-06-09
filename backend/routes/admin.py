@@ -15,6 +15,7 @@ class UserCreate(BaseModel):
     email: str
     password: str
     role: schemas.UserRole
+    department_code: Optional[str] = None
 
 class StudentCreate(BaseModel):
     id: str
@@ -39,6 +40,18 @@ def create_user(user: UserCreate, db: Session = Depends(database.get_db), admin:
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     
+    # Check HOD department requirement
+    if user.role == schemas.UserRole.HOD:
+        if not user.department_code:
+            raise HTTPException(status_code=400, detail="Department Code is required for HOD")
+        
+        # Ensure department exists
+        dept = db.query(schemas.Department).filter(schemas.Department.code == user.department_code).first()
+        if not dept:
+            dept = schemas.Department(code=user.department_code, name=user.department_code)
+            db.add(dept)
+            db.flush()
+
     hashed_password = auth_service.get_password_hash(user.password)
     new_user = schemas.User(
         full_name=user.full_name,
@@ -47,13 +60,35 @@ def create_user(user: UserCreate, db: Session = Depends(database.get_db), admin:
         role=user.role
     )
     db.add(new_user)
+    db.flush()
+
+    if user.role == schemas.UserRole.HOD:
+        hod_assignment = schemas.HodAssignment(user_id=new_user.id, department_code=user.department_code)
+        db.add(hod_assignment)
+
     db.commit()
     db.refresh(new_user)
     return new_user
 
 @router.get("/users")
 def get_users(db: Session = Depends(database.get_db), admin: schemas.User = Depends(auth_service.check_admin)):
-    return db.query(schemas.User).all()
+    users = db.query(schemas.User).all()
+    result = []
+    for u in users:
+        dept_code = None
+        if u.role == schemas.UserRole.HOD:
+            assignment = db.query(schemas.HodAssignment).filter(schemas.HodAssignment.user_id == u.id).first()
+            if assignment:
+                dept_code = assignment.department_code
+        result.append({
+            "id": u.id,
+            "full_name": u.full_name,
+            "email": u.email,
+            "role": u.role,
+            "created_at": u.created_at,
+            "department_code": dept_code
+        })
+    return result
 
 @router.post("/students")
 def create_student(student: StudentCreate, db: Session = Depends(database.get_db), admin: schemas.User = Depends(auth_service.check_admin)):
@@ -282,6 +317,9 @@ def delete_user(user_id: int, db: Session = Depends(database.get_db), admin: sch
     assigned_courses = db.query(schemas.Course).filter(schemas.Course.faculty_id == user_id).all()
     for course in assigned_courses:
         course.faculty_id = None  # Unassign faculty instead of deleting course
+    
+    # Delete related HOD assignment if exists
+    db.query(schemas.HodAssignment).filter(schemas.HodAssignment.user_id == user_id).delete()
     
     db.delete(user)
     db.commit()

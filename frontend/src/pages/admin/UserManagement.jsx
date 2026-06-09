@@ -4,7 +4,12 @@ import axios from 'axios';
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({ full_name: '', email: '', password: '', role: 'FACULTY' });
+  const [formData, setFormData] = useState({ full_name: '', email: '', password: '', role: 'FACULTY', department_code: '' });
+
+  const openModal = () => {
+    setFormData({ full_name: '', email: '', password: '', role: 'FACULTY', department_code: '' });
+    setShowModal(true);
+  };
 
   useEffect(() => {
     fetchUsers();
@@ -44,7 +49,7 @@ const UserManagement = () => {
     <div className="main-content">
       <div className="flex-between">
         <h1>User Management</h1>
-        <button className="btn btn-primary" onClick={() => setShowModal(true)}>+ Add User</button>
+        <button className="btn btn-primary" onClick={openModal}>+ Add User</button>
       </div>
 
       <div className="glass-card" style={{ marginTop: '30px' }}>
@@ -63,7 +68,16 @@ const UserManagement = () => {
               <tr key={u.id}>
                 <td>{u.full_name}</td>
                 <td>{u.email}</td>
-                <td><span style={{ padding: '4px 8px', borderRadius: '4px', background: u.role === 'ADMIN' ? '#ffe8e8' : '#e8f5ff', color: u.role === 'ADMIN' ? '#d9534f' : '#003366' }}>{u.role}</span></td>
+                <td>
+                  <span style={{ 
+                    padding: '4px 8px', 
+                    borderRadius: '4px', 
+                    background: u.role === 'ADMIN' ? '#ffe8e8' : u.role === 'HOD' ? '#e8fdf5' : '#e8f5ff', 
+                    color: u.role === 'ADMIN' ? '#d9534f' : u.role === 'HOD' ? '#006633' : '#003366' 
+                  }}>
+                    {u.role} {u.department_code ? `(${u.department_code})` : ''}
+                  </span>
+                </td>
                 <td>{new Date(u.created_at).toLocaleDateString()}</td>
                 <td>
                   <button 
@@ -110,7 +124,7 @@ const UserManagement = () => {
               />
               <select 
                 className="input-field"
-                style={{ marginBottom: '20px' }}
+                style={{ marginBottom: '10px' }}
                 onChange={e => setFormData({...formData, role: e.target.value})}
                 value={formData.role}
               >
@@ -119,6 +133,17 @@ const UserManagement = () => {
                 <option value="HOD">Head of Department (HOD)</option>
                 <option value="DEAN">Dean</option>
               </select>
+
+              {formData.role === 'HOD' && (
+                <input 
+                  className="input-field"
+                  placeholder="Department Code (e.g. CS, EE)" 
+                  style={{ marginBottom: '20px' }} 
+                  value={formData.department_code}
+                  onChange={e => setFormData({...formData, department_code: e.target.value})}
+                  required
+                />
+              )}
               
               <div style={{ display: 'flex', gap: '10px' }}>
                 <button type="submit" className="btn btn-primary">Create User</button>
