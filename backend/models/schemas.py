@@ -9,6 +9,7 @@ class UserRole(str, enum.Enum):
     FACULTY = "FACULTY"
     HOD = "HOD"
     DEAN = "DEAN"
+    ASSOCIATE_DEAN = "ASSOCIATE_DEAN"
 
 class AttendanceStatus(str, enum.Enum):
     PRESENT = "Present"

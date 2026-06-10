@@ -40,6 +40,12 @@ def create_user(user: UserCreate, db: Session = Depends(database.get_db), admin:
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     
+    # Check Associate Dean uniqueness
+    if user.role == schemas.UserRole.ASSOCIATE_DEAN:
+        existing_ad = db.query(schemas.User).filter(schemas.User.role == schemas.UserRole.ASSOCIATE_DEAN).first()
+        if existing_ad:
+            raise HTTPException(status_code=400, detail="An Associate Dean already exists. Only one is allowed.")
+            
     # Check HOD department requirement
     if user.role == schemas.UserRole.HOD:
         if not user.department_code:

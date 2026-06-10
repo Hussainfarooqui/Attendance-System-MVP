@@ -11,6 +11,8 @@ const UserManagement = () => {
     setShowModal(true);
   };
 
+  const hasAssociateDean = users.some(u => u.role === 'ASSOCIATE_DEAN');
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -72,10 +74,10 @@ const UserManagement = () => {
                   <span style={{ 
                     padding: '4px 8px', 
                     borderRadius: '4px', 
-                    background: u.role === 'ADMIN' ? '#ffe8e8' : u.role === 'HOD' ? '#e8fdf5' : '#e8f5ff', 
-                    color: u.role === 'ADMIN' ? '#d9534f' : u.role === 'HOD' ? '#006633' : '#003366' 
+                    background: u.role === 'ADMIN' ? '#ffe8e8' : (u.role === 'HOD' || u.role === 'DEAN' || u.role === 'ASSOCIATE_DEAN') ? '#e8fdf5' : '#e8f5ff', 
+                    color: u.role === 'ADMIN' ? '#d9534f' : (u.role === 'HOD' || u.role === 'DEAN' || u.role === 'ASSOCIATE_DEAN') ? '#006633' : '#003366' 
                   }}>
-                    {u.role} {u.department_code ? `(${u.department_code})` : ''}
+                    {u.role.replace('_', ' ')} {u.department_code ? `(${u.department_code})` : ''}
                   </span>
                 </td>
                 <td>{new Date(u.created_at).toLocaleDateString()}</td>
@@ -132,6 +134,9 @@ const UserManagement = () => {
                 <option value="ADMIN">System Administrator</option>
                 <option value="HOD">Head of Department (HOD)</option>
                 <option value="DEAN">Dean</option>
+                <option value="ASSOCIATE_DEAN" disabled={hasAssociateDean}>
+                  Associate Dean {hasAssociateDean ? '(Already Exists)' : ''}
+                </option>
               </select>
 
               {formData.role === 'HOD' && (
