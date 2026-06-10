@@ -208,8 +208,14 @@ class CourseCreate(BaseModel):
     time_slot: Optional[str] = None
 
 @router.get("/courses")
-def get_courses(db: Session = Depends(database.get_db), admin: schemas.User = Depends(auth_service.check_admin)):
-    courses = db.query(schemas.Course).all()
+def get_courses(db: Session = Depends(database.get_db), current_user: schemas.User = Depends(auth_service.check_leadership)):
+    if current_user.role == schemas.UserRole.HOD:
+        hod_assignment = db.query(schemas.HodAssignment).filter(schemas.HodAssignment.user_id == current_user.id).first()
+        dept_code = hod_assignment.department_code if hod_assignment else None
+        courses = db.query(schemas.Course).filter(schemas.Course.department == dept_code).all()
+    else:
+        courses = db.query(schemas.Course).all()
+    
     result = []
     for c in courses:
         faculty = db.query(schemas.User).filter(schemas.User.id == c.faculty_id).first() if c.faculty_id else None

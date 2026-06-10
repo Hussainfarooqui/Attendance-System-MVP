@@ -13,11 +13,12 @@ import BulkUpload from './pages/admin/BulkUpload';
 import HodDashboard from './pages/HodDashboard';
 import DeanDashboard from './pages/DeanDashboard';
 
-const ProtectedRoute = ({ children, role }) => {
+const ProtectedRoute = ({ children, role, allowedRoles }) => {
   const { user, loading } = useAuth();
   if (loading) return <div style={{ display:'flex', justifyContent:'center', alignItems:'center', height:'100vh' }}>Loading...</div>;
   if (!user) return <Navigate to="/login" />;
   if (role && user.role !== role) return <Navigate to="/" />;
+  if (allowedRoles && !allowedRoles.includes(user.role)) return <Navigate to="/" />;
   return children;
 };
 
@@ -70,6 +71,14 @@ const Layout = ({ children }) => {
             <>
               <NavLink to="/dean/dashboard" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>
                 <span>Dean Dashboard</span>
+              </NavLink>
+            </>
+          )}
+
+          {user.role === 'ASSOCIATE_DEAN' && (
+            <>
+              <NavLink to="/hod/dashboard" className={({isActive}) => isActive ? "nav-link active" : "nav-link"}>
+                <span>Associate Dean Dashboard</span>
               </NavLink>
             </>
           )}
@@ -160,9 +169,9 @@ function App() {
             <ProtectedRoute role="ADMIN"><Layout><BulkUpload /></Layout></ProtectedRoute>
           } />
 
-          {/* HOD Routes */}
+          {/* Leadership Dashboard (HOD and Associate Dean) */}
           <Route path="/hod/dashboard" element={
-            <ProtectedRoute role="HOD"><Layout><HodDashboard /></Layout></ProtectedRoute>
+            <ProtectedRoute allowedRoles={['HOD', 'ASSOCIATE_DEAN']}><Layout><HodDashboard /></Layout></ProtectedRoute>
           } />
 
           {/* DEAN Routes */}

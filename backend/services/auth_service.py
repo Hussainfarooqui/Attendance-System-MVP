@@ -59,6 +59,14 @@ def check_admin(current_user: schemas.User = Depends(get_current_user)):
         )
     return current_user
 
+def check_leadership(current_user: schemas.User = Depends(get_current_user)):
+    if current_user.role not in [schemas.UserRole.ADMIN, schemas.UserRole.HOD, schemas.UserRole.DEAN, schemas.UserRole.ASSOCIATE_DEAN]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="The user doesn't have enough privileges"
+        )
+    return current_user
+
 def check_faculty(current_user: schemas.User = Depends(get_current_user)):
     if current_user.role not in [schemas.UserRole.FACULTY, schemas.UserRole.ADMIN]:
         raise HTTPException(
