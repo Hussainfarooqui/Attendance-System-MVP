@@ -10,8 +10,9 @@ def main():
     try:
         classroom = db.query(schemas.Classroom).filter(schemas.Classroom.id == 1).first()
         if classroom:
-            print(f"Changing camera_url from '{classroom.camera_url}' to '0'...")
-            classroom.camera_url = "0"
+            new_url = "rtsp://Admin:admin123@10.125.0.139:554/cam/realmonitor?channel=1&subtype=0"
+            print(f"Changing camera_url from '{classroom.camera_url}' to '{new_url}'...")
+            classroom.camera_url = new_url
             db.commit()
             print("Webcam configured successfully!")
         else:
